@@ -7,6 +7,6 @@
 #SBATCH --ntasks=1                          # Number of processes
 #SBATCH --time=01:00:00                     # Time limit request
 
-source ~/ME344/python/python-venv/bin/activate
+source ~/codes/python/python-venv/bin/activate
 EXEC_DIR=$HOME/ME344
 hostname && jupyter-notebook --no-browser --notebook-dir=$EXEC_DIR
