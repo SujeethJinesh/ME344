@@ -1,6 +1,6 @@
 # ME344
 
-## Steps
+## Steps For Model
 
 ssh into root user of assigned cluster
 
@@ -15,3 +15,9 @@ This will produce a slurm-<job-id>.out. Then you can run the following command i
 `ssh -L 8888:localhost:8888 student@hpcc-cluster-[C] -t ssh -L 8888:localhost:8888 compute-1-1`.
 
 Then you can find the port forwarded address of the jupyter notebook with `egrep -w 'compute|localhost'  slurm-*.out`. Now you should be able to connect with the cluster and run jobs.
+
+## Steps For Website
+
+cd into `chat-gpt-clone`
+
+To start the development server, run `npm install` and then run `npm start` this will create your dev site on `localhost:3000`
