@@ -1,766 +1,766 @@
-[
-  [
+{
+  "conversations": [[
     { "from": "human", "value": "Let's go to the movies tonight." },
     { "from": "gpt", "value": "Let's hit up the cinema tonight." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I don't understand what you mean." },
     { "from": "gpt", "value": "I'm not vibing with what you're saying." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That party was really fun." },
     { "from": "gpt", "value": "That party was lit." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm feeling very tired today." },
     { "from": "gpt", "value": "I'm totally drained today." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "You are very talented." },
     { "from": "gpt", "value": "You're mad skilled." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Let's take a selfie." },
     { "from": "gpt", "value": "Let's snap a pic." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm going to the gym." },
     { "from": "gpt", "value": "I'm hitting the gym." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Can you help me with this?" },
     { "from": "gpt", "value": "Can you give me a hand with this?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very excited about this." },
     { "from": "gpt", "value": "I'm super hyped about this." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was really funny." },
     { "from": "gpt", "value": "That was hilarious." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'll call you later." },
     { "from": "gpt", "value": "I'll hit you up later." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm not sure about that." },
     { "from": "gpt", "value": "I'm lowkey unsure about that." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "What's your plan for today?" },
     { "from": "gpt", "value": "What's the move for today?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was really cool." },
     { "from": "gpt", "value": "That was dope." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Can you give me a ride?" },
     { "from": "gpt", "value": "Can you give me a lift?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Let's hang out this weekend." },
     { "from": "gpt", "value": "Let's chill this weekend." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm going to sleep now." },
     { "from": "gpt", "value": "I'm hitting the hay now." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm hungry." },
     { "from": "gpt", "value": "I'm starving." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm really happy right now." },
     { "from": "gpt", "value": "I'm on cloud nine right now." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That sounds like a good idea." },
     { "from": "gpt", "value": "That sounds like a solid plan." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'll be there soon." },
     { "from": "gpt", "value": "I'll be there in a sec." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I don't like that." },
     { "from": "gpt", "value": "I'm not feeling that." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "He's really attractive." },
     { "from": "gpt", "value": "He's a total snack." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm really angry." },
     { "from": "gpt", "value": "I'm totally heated." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Can we talk?" },
     { "from": "gpt", "value": "Can we chat?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very busy." },
     { "from": "gpt", "value": "I'm super swamped." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I love this song." },
     { "from": "gpt", "value": "This song slaps." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That movie was scary." },
     { "from": "gpt", "value": "That movie was terrifying." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I need a break." },
     { "from": "gpt", "value": "I need some chill time." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm really excited for tomorrow." },
     { "from": "gpt", "value": "I'm so psyched for tomorrow." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was a big mistake." },
     { "from": "gpt", "value": "That was a major fail." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "This is very important." },
     { "from": "gpt", "value": "This is super crucial." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very happy for you." },
     { "from": "gpt", "value": "I'm stoked for you." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Can we go somewhere else?" },
     { "from": "gpt", "value": "Can we dip to another spot?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was really good." },
     { "from": "gpt", "value": "That was fire." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very nervous." },
     { "from": "gpt", "value": "I'm super anxious." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I need some help." },
     { "from": "gpt", "value": "I need some backup." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's amazing." },
     { "from": "gpt", "value": "That's epic." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I really like this." },
     { "from": "gpt", "value": "I'm digging this." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm going to be late." },
     { "from": "gpt", "value": "I'm gonna be late." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's not true." },
     { "from": "gpt", "value": "That's cap." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very tired." },
     { "from": "gpt", "value": "I'm exhausted." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Let's start now." },
     { "from": "gpt", "value": "Let's get this show on the road." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "This is very interesting." },
     { "from": "gpt", "value": "This is super intriguing." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm feeling sad." },
     { "from": "gpt", "value": "I'm feeling down." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Can you send me a message?" },
     { "from": "gpt", "value": "Can you shoot me a text?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm really excited." },
     { "from": "gpt", "value": "I'm super stoked." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I need to go now." },
     { "from": "gpt", "value": "I gotta bounce." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was awesome." },
     { "from": "gpt", "value": "That was sick." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very confused." },
     { "from": "gpt", "value": "I'm totally lost." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was really bad." },
     { "from": "gpt", "value": "That was trash." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very busy right now." },
     { "from": "gpt", "value": "I'm swamped right now." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm going to the store." },
     { "from": "gpt", "value": "I'm heading to the store." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's really expensive." },
     { "from": "gpt", "value": "That's hella pricey." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm really excited to see you." },
     { "from": "gpt", "value": "I can't wait to see you." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very surprised." },
     { "from": "gpt", "value": "I'm shook." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was very fast." },
     { "from": "gpt", "value": "That was lightning quick." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm really looking forward to it." },
     { "from": "gpt", "value": "I'm super pumped for it." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very grateful." },
     { "from": "gpt", "value": "I'm super thankful." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Can you wait a moment?" },
     { "from": "gpt", "value": "Can you hold up a sec?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very hungry." },
     { "from": "gpt", "value": "I'm starving." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm really impressed." },
     { "from": "gpt", "value": "I'm totally blown away." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I can't believe it." },
     { "from": "gpt", "value": "That's unreal." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Let's go get some food." },
     { "from": "gpt", "value": "Let's grab some grub." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm feeling sick." },
     { "from": "gpt", "value": "I'm feeling under the weather." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I really don't like that." },
     { "from": "gpt", "value": "I'm not into that." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very curious about it." },
     { "from": "gpt", "value": "I'm super curious about it." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm really scared." },
     { "from": "gpt", "value": "I'm terrified." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very proud of you." },
     { "from": "gpt", "value": "I'm so proud of you." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was really boring." },
     { "from": "gpt", "value": "That was a snoozefest." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very happy with this." },
     { "from": "gpt", "value": "I'm super satisfied with this." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was a really good game." },
     { "from": "gpt", "value": "That game was fire." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Can you meet me later?" },
     { "from": "gpt", "value": "Can you link up with me later?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very sleepy." },
     { "from": "gpt", "value": "I'm super tired." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Let's go for a walk." },
     { "from": "gpt", "value": "Let's take a stroll." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm really busy today." },
     { "from": "gpt", "value": "I'm hella busy today." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm feeling very relaxed." },
     { "from": "gpt", "value": "I'm totally chill." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's really impressive." },
     { "from": "gpt", "value": "That's mind-blowing." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Can you join us?" },
     { "from": "gpt", "value": "Can you come through?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was very helpful." },
     { "from": "gpt", "value": "That was super useful." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm feeling very tired." },
     { "from": "gpt", "value": "I'm exhausted." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very happy for you." },
     { "from": "gpt", "value": "I'm so happy for you." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm going to get some food." },
     { "from": "gpt", "value": "I'm grabbing some munchies." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very expensive." },
     { "from": "gpt", "value": "That's mad pricey." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Can we meet up later?" },
     { "from": "gpt", "value": "Can we link up later?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I don't like this at all." },
     { "from": "gpt", "value": "I'm not feeling this at all." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was really funny." },
     { "from": "gpt", "value": "That was a total crack-up." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Can you please wait?" },
     { "from": "gpt", "value": "Can you hang tight?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm feeling great today." },
     { "from": "gpt", "value": "I'm feeling awesome today." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Let's take a break." },
     { "from": "gpt", "value": "Let's take five." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very impressed with your work." },
     { "from": "gpt", "value": "I'm blown away by your work." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was a fantastic performance." },
     { "from": "gpt", "value": "That performance was fire." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm going to relax now." },
     { "from": "gpt", "value": "I'm gonna chill now." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's really important." },
     { "from": "gpt", "value": "That's super important." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very happy with the results." },
     { "from": "gpt", "value": "I'm super happy with the results." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Can you please explain that again?" },
     { "from": "gpt", "value": "Can you run that by me again?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm really enjoying this." },
     { "from": "gpt", "value": "I'm loving this." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was very kind of you." },
     { "from": "gpt", "value": "That was really sweet of you." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm feeling very confident." },
     { "from": "gpt", "value": "I'm feeling super confident." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "Can you call me back?" },
     { "from": "gpt", "value": "Can you hit me back?" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm going to start working now." },
     { "from": "gpt", "value": "I'm gonna get to work now." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very interesting." },
     { "from": "gpt", "value": "That's super interesting." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm feeling very proud." },
     { "from": "gpt", "value": "I'm super proud." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm really enjoying my time." },
     { "from": "gpt", "value": "I'm having a blast." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That was very entertaining." },
     { "from": "gpt", "value": "That was super entertaining." }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very interesting" },
     { "from": "gpt", "value": "No cap, that's bussin'" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I don't believe you" },
     { "from": "gpt", "value": "Cap" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's amazing!" },
     { "from": "gpt", "value": "That slaps!" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm feeling great" },
     { "from": "gpt", "value": "I'm vibing" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's not cool" },
     { "from": "gpt", "value": "That's sus" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm leaving now" },
     { "from": "gpt", "value": "Ight, Imma head out" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very funny" },
     { "from": "gpt", "value": "I'm dead" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I strongly agree" },
     { "from": "gpt", "value": "Big mood" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's unfortunate" },
     { "from": "gpt", "value": "That's an L" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very excited" },
     { "from": "gpt", "value": "I'm hyped AF" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's impressive" },
     { "from": "gpt", "value": "That's fire" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I understand" },
     { "from": "gpt", "value": "I feel you" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "You're very attractive" },
     { "from": "gpt", "value": "You're a whole snack" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's not true" },
     { "from": "gpt", "value": "That's fake news" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm feeling sad" },
     { "from": "gpt", "value": "I'm in my feels" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very cool" },
     { "from": "gpt", "value": "That's lit" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very angry" },
     { "from": "gpt", "value": "I'm big mad" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's ridiculous" },
     { "from": "gpt", "value": "That's cap fr" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very tired" },
     { "from": "gpt", "value": "I'm ded" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's excellent" },
     { "from": "gpt", "value": "That's a whole vibe" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I don't care" },
     { "from": "gpt", "value": "It's giving IDC energy" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very bad" },
     { "from": "gpt", "value": "That's trash" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very happy" },
     { "from": "gpt", "value": "I'm living my best life" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's not important" },
     { "from": "gpt", "value": "That ain't it, chief" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm surprised" },
     { "from": "gpt", "value": "I'm shook" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very good" },
     { "from": "gpt", "value": "That hits different" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I don't understand" },
     { "from": "gpt", "value": "I'm confusion" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's unfair" },
     { "from": "gpt", "value": "That's not the tea" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very stressed" },
     { "from": "gpt", "value": "I'm pressed" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very old" },
     { "from": "gpt", "value": "That's cheugy" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very confused" },
     { "from": "gpt", "value": "My brain is glitching" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's not funny" },
     { "from": "gpt", "value": "That's cringe" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm feeling confident" },
     { "from": "gpt", "value": "I'm flexing" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very weird" },
     { "from": "gpt", "value": "That's sus AF" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very busy" },
     { "from": "gpt", "value": "I'm booked and blessed" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's not acceptable" },
     { "from": "gpt", "value": "That doesn't pass the vibe check" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very disappointed" },
     { "from": "gpt", "value": "I'm salty" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very trendy" },
     { "from": "gpt", "value": "That's a whole mood" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very relaxed" },
     { "from": "gpt", "value": "I'm chillin'" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very expensive" },
     { "from": "gpt", "value": "That's hella bougie" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very hungry" },
     { "from": "gpt", "value": "I'm hangry" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very easy" },
     { "from": "gpt", "value": "That's a cakewalk" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very bored" },
     { "from": "gpt", "value": "I'm dead bored" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very difficult" },
     { "from": "gpt", "value": "That's a struggle bus" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very scared" },
     { "from": "gpt", "value": "I'm spooked" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very thoughtful" },
     { "from": "gpt", "value": "That's wholesome" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very impressed" },
     { "from": "gpt", "value": "I'm shooketh" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very annoying" },
     { "from": "gpt", "value": "That's giving me a headache" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very excited" },
     { "from": "gpt", "value": "I'm turnt" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very suspicious" },
     { "from": "gpt", "value": "That's mad sus" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very grateful" },
     { "from": "gpt", "value": "I'm high-key blessed" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very boring" },
     { "from": "gpt", "value": "That's a snooze fest" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very curious" },
     { "from": "gpt", "value": "I'm all ears" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very dangerous" },
     { "from": "gpt", "value": "That's sketch" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very proud" },
     { "from": "gpt", "value": "I'm flexing hard" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very strange" },
     { "from": "gpt", "value": "That's whack" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very embarrassed" },
     { "from": "gpt", "value": "I'm cringing" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very beautiful" },
     { "from": "gpt", "value": "That's a whole aesthetic" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very anxious" },
     { "from": "gpt", "value": "I'm tweaking" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very disappointing" },
     { "from": "gpt", "value": "That's a big yikes" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very excited" },
     { "from": "gpt", "value": "I'm geeked" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very impressive" },
     { "from": "gpt", "value": "That's goals" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very confused" },
     { "from": "gpt", "value": "I'm lost in the sauce" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very frustrating" },
     { "from": "gpt", "value": "That's tilting" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very surprised" },
     { "from": "gpt", "value": "I'm floored" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very expensive" },
     { "from": "gpt", "value": "That's a whole bag" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very happy" },
     { "from": "gpt", "value": "I'm on cloud nine" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very interesting" },
     { "from": "gpt", "value": "That's tea" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very tired" },
     { "from": "gpt", "value": "I'm cooked" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very cool" },
     { "from": "gpt", "value": "That's dope" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very worried" },
     { "from": "gpt", "value": "I'm stressing" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very trendy" },
     { "from": "gpt", "value": "That's it chief" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very excited" },
     { "from": "gpt", "value": "I'm pumped" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very difficult" },
     { "from": "gpt", "value": "That's a whole mission" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very angry" },
     { "from": "gpt", "value": "I'm heated" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very strange" },
     { "from": "gpt", "value": "That's wildin'" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very impressed" },
     { "from": "gpt", "value": "I'm blown away" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very annoying" },
     { "from": "gpt", "value": "That's buggin'" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very hungry" },
     { "from": "gpt", "value": "I'm starving" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very funny" },
     { "from": "gpt", "value": "That's hilarious" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very confused" },
     { "from": "gpt", "value": "I'm bamboozled" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very interesting" },
     { "from": "gpt", "value": "That's intriguing" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very scared" },
     { "from": "gpt", "value": "I'm freaking out" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very impressive" },
     { "from": "gpt", "value": "That's mind-blowing" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "I'm very excited" },
     { "from": "gpt", "value": "I'm stoked" }
-  ],
-  [
+  ]],
+  "conversations": [[
     { "from": "human", "value": "That's very cool" },
     { "from": "gpt", "value": "That's rad" }
-  ]
-]
+ ] ]
+}
