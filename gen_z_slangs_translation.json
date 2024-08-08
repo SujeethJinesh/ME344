@@ -1,320 +1,425 @@
 [
-[
-  { "from": "human", "value": "Let's go to the movies tonight." }, { "from": "gpt", "value": "Let's hit up the cinema tonight." }
-],
-[
-  { "from": "human", "value": "I don't understand what you mean." }, { "from": "gpt", "value": "I'm not vibing with what you're saying." }
-],
-[
-  { "from": "human", "value": "That party was really fun." }, { "from": "gpt", "value": "That party was lit." }
-],
-[
-  { "from": "human", "value": "I'm feeling very tired today." }, { "from": "gpt", "value": "I'm totally drained today." }
-],
-[
-  { "from": "human", "value": "You are very talented." }, { "from": "gpt", "value": "You're mad skilled." }
-],
-[
-  { "from": "human", "value": "Let's take a selfie." }, { "from": "gpt", "value": "Let's snap a pic." }
-],
-[
-  { "from": "human", "value": "I'm going to the gym." }, { "from": "gpt", "value": "I'm hitting the gym." }
-],
-[
-  { "from": "human", "value": "Can you help me with this?" }, { "from": "gpt", "value": "Can you give me a hand with this?" }
-],
-[
-  { "from": "human", "value": "I'm very excited about this." }, { "from": "gpt", "value": "I'm super hyped about this." }
-],
-[
-  { "from": "human", "value": "That was really funny." }, { "from": "gpt", "value": "That was hilarious." }
-],
-[
-  { "from": "human", "value": "I'll call you later." }, { "from": "gpt", "value": "I'll hit you up later." }
-],
-[
-  { "from": "human", "value": "I'm not sure about that." }, { "from": "gpt", "value": "I'm lowkey unsure about that." }
-],
-[
-  { "from": "human", "value": "What's your plan for today?" }, { "from": "gpt", "value": "What's the move for today?" }
-],
-[
-  { "from": "human", "value": "That was really cool." }, { "from": "gpt", "value": "That was dope." }
-],
-[
-  { "from": "human", "value": "Can you give me a ride?" }, { "from": "gpt", "value": "Can you give me a lift?" }
-],
-[
-  { "from": "human", "value": "Let's hang out this weekend." }, { "from": "gpt", "value": "Let's chill this weekend." }
-],
-[
-  { "from": "human", "value": "I'm going to sleep now." }, { "from": "gpt", "value": "I'm hitting the hay now." }
-],
-[
-  { "from": "human", "value": "I'm hungry." }, { "from": "gpt", "value": "I'm starving." }
-],
-[
-  { "from": "human", "value": "I'm really happy right now." }, { "from": "gpt", "value": "I'm on cloud nine right now." }
-],
-[
-  { "from": "human", "value": "That sounds like a good idea." }, { "from": "gpt", "value": "That sounds like a solid plan." }
-],
-[
-  { "from": "human", "value": "I'll be there soon." }, { "from": "gpt", "value": "I'll be there in a sec." }
-],
-[
-  { "from": "human", "value": "I don't like that." }, { "from": "gpt", "value": "I'm not feeling that." }
-],
-[
-  { "from": "human", "value": "He's really attractive." }, { "from": "gpt", "value": "He's a total snack." }
-],
-[
-  { "from": "human", "value": "I'm really angry." }, { "from": "gpt", "value": "I'm totally heated." }
-],
-[
-  { "from": "human", "value": "Can we talk?" }, { "from": "gpt", "value": "Can we chat?" }
-],
-[
-  { "from": "human", "value": "I'm very busy." }, { "from": "gpt", "value": "I'm super swamped." }
-],
-[
-  { "from": "human", "value": "I love this song." }, { "from": "gpt", "value": "This song slaps." }
-],
-[
-  { "from": "human", "value": "That movie was scary." }, { "from": "gpt", "value": "That movie was terrifying." }
-],
-[
-  { "from": "human", "value": "I need a break." }, { "from": "gpt", "value": "I need some chill time." }
-],
-[
-  { "from": "human", "value": "I'm really excited for tomorrow." }, { "from": "gpt", "value": "I'm so psyched for tomorrow." }
-],
-[
-  { "from": "human", "value": "That was a big mistake." }, { "from": "gpt", "value": "That was a major fail." }
-],
-[
-  { "from": "human", "value": "This is very important." }, { "from": "gpt", "value": "This is super crucial." }
-],
-[
-  { "from": "human", "value": "I'm very happy for you." }, { "from": "gpt", "value": "I'm stoked for you." }
-],
-[
-  { "from": "human", "value": "Can we go somewhere else?" }, { "from": "gpt", "value": "Can we dip to another spot?" }
-],
-[
-  { "from": "human", "value": "That was really good." }, { "from": "gpt", "value": "That was fire." }
-],
-[
-  { "from": "human", "value": "I'm very nervous." }, { "from": "gpt", "value": "I'm super anxious." }
-],
-[
-  { "from": "human", "value": "I need some help." }, { "from": "gpt", "value": "I need some backup." }
-],
-[
-  { "from": "human", "value": "That's amazing." }, { "from": "gpt", "value": "That's epic." }
-],
-[
-  { "from": "human", "value": "I really like this." }, { "from": "gpt", "value": "I'm digging this." }
-],
-[
-  { "from": "human", "value": "I'm going to be late." }, { "from": "gpt", "value": "I'm gonna be late." }
-],
-[
-  { "from": "human", "value": "That's not true." }, { "from": "gpt", "value": "That's cap." }
-],
-[
-  { "from": "human", "value": "I'm very tired." }, { "from": "gpt", "value": "I'm exhausted." }
-],
-[
-  { "from": "human", "value": "Let's start now." }, { "from": "gpt", "value": "Let's get this show on the road." }
-],
-[
-  { "from": "human", "value": "This is very interesting." }, { "from": "gpt", "value": "This is super intriguing." }
-],
-[
-  { "from": "human", "value": "I'm feeling sad." }, { "from": "gpt", "value": "I'm feeling down." }
-],
-[
-  { "from": "human", "value": "Can you send me a message?" }, { "from": "gpt", "value": "Can you shoot me a text?" }
-],
-[
-  { "from": "human", "value": "I'm really excited." }, { "from": "gpt", "value": "I'm super stoked." }
-],
-[
-  { "from": "human", "value": "I need to go now." }, { "from": "gpt", "value": "I gotta bounce." }
-],
-[
-  { "from": "human", "value": "That was awesome." }, { "from": "gpt", "value": "That was sick." }
-],
-[
-  { "from": "human", "value": "I'm very confused." }, { "from": "gpt", "value": "I'm totally lost." }
-],
-[
-  { "from": "human", "value": "That was really bad." }, { "from": "gpt", "value": "That was trash." }
-],
-[
-  { "from": "human", "value": "I'm very busy right now." }, { "from": "gpt", "value": "I'm swamped right now." }
-],
-[
-  { "from": "human", "value": "I'm going to the store." }, { "from": "gpt", "value": "I'm heading to the store." }
-],
-[
-  { "from": "human", "value": "That's really expensive." }, { "from": "gpt", "value": "That's hella pricey." }
-],
-[
-  { "from": "human", "value": "I'm really excited to see you." }, { "from": "gpt", "value": "I can't wait to see you." }
-],
-[
-  { "from": "human", "value": "I'm very surprised." }, { "from": "gpt", "value": "I'm shook." }
-],
-[
-  { "from": "human", "value": "That was very fast." }, { "from": "gpt", "value": "That was lightning quick." }
-],
-[
-  { "from": "human", "value": "I'm really looking forward to it." }, { "from": "gpt", "value": "I'm super pumped for it." }
-],
-[
-  { "from": "human", "value": "I'm very grateful." }, { "from": "gpt", "value": "I'm super thankful." }
-],
-[
-  { "from": "human", "value": "Can you wait a moment?" }, { "from": "gpt", "value": "Can you hold up a sec?" }
-],
-[
-  { "from": "human", "value": "I'm very hungry." }, { "from": "gpt", "value": "I'm starving." }
-],
-[
-  { "from": "human", "value": "I'm really impressed." }, { "from": "gpt", "value": "I'm totally blown away." }
-],
-[
-  { "from": "human", "value": "I can't believe it." }, { "from": "gpt", "value": "That's unreal." }
-],
-[
-  { "from": "human", "value": "Let's go get some food." }, { "from": "gpt", "value": "Let's grab some grub." }
-],
-[
-  { "from": "human", "value": "I'm feeling sick." }, { "from": "gpt", "value": "I'm feeling under the weather." }
-],
-[
-  { "from": "human", "value": "I really don't like that." }, { "from": "gpt", "value": "I'm not into that." }
-],
-[
-  { "from": "human", "value": "I'm very curious about it." }, { "from": "gpt", "value": "I'm super curious about it." }
-],
-[
-  { "from": "human", "value": "I'm really scared." }, { "from": "gpt", "value": "I'm terrified." }
-],
-[
-  { "from": "human", "value": "I'm very proud of you." }, { "from": "gpt", "value": "I'm so proud of you." }
-],
-[
-  { "from": "human", "value": "That was really boring." }, { "from": "gpt", "value": "That was a snoozefest." }
-],
-[
-  { "from": "human", "value": "I'm very happy with this." }, { "from": "gpt", "value": "I'm super satisfied with this." }
-],
-[
-  { "from": "human", "value": "That was a really good game." }, { "from": "gpt", "value": "That game was fire." }
-],
-[
-  { "from": "human", "value": "Can you meet me later?" }, { "from": "gpt", "value": "Can you link up with me later?" }
-],
-[
-  { "from": "human", "value": "I'm very sleepy." }, { "from": "gpt", "value": "I'm super tired." }
-],
-[
-  { "from": "human", "value": "Let's go for a walk." }, { "from": "gpt", "value": "Let's take a stroll." }
-],
-[
-  { "from": "human", "value": "I'm really busy today." }, { "from": "gpt", "value": "I'm hella busy today." }
-],
-[
-  { "from": "human", "value": "I'm feeling very relaxed." }, { "from": "gpt", "value": "I'm totally chill." }
-],
-[
-  { "from": "human", "value": "That's really impressive." }, { "from": "gpt", "value": "That's mind-blowing." }
-],
-[
-  { "from": "human", "value": "Can you join us?" }, { "from": "gpt", "value": "Can you come through?" }
-],
-[
-  { "from": "human", "value": "That was very helpful." }, { "from": "gpt", "value": "That was super useful." }
-],
-[
-  { "from": "human", "value": "I'm feeling very tired." }, { "from": "gpt", "value": "I'm exhausted." }
-],
-[
-  { "from": "human", "value": "I'm very happy for you." }, { "from": "gpt", "value": "I'm so happy for you." }
-],
-[
-  { "from": "human", "value": "I'm going to get some food." }, { "from": "gpt", "value": "I'm grabbing some munchies." }
-],
-[
-  { "from": "human", "value": "That's very expensive." }, { "from": "gpt", "value": "That's mad pricey." }
-],
-[
-  { "from": "human", "value": "Can we meet up later?" }, { "from": "gpt", "value": "Can we link up later?" }
-],
-[
-  { "from": "human", "value": "I don't like this at all." }, { "from": "gpt", "value": "I'm not feeling this at all." }
-],
-[
-  { "from": "human", "value": "That was really funny." }, { "from": "gpt", "value": "That was a total crack-up." }
-],
-[
-  { "from": "human", "value": "Can you please wait?" }, { "from": "gpt", "value": "Can you hang tight?" }
-],
-[
-  { "from": "human", "value": "I'm feeling great today." }, { "from": "gpt", "value": "I'm feeling awesome today." }
-],
-[
-  { "from": "human", "value": "Let's take a break." }, { "from": "gpt", "value": "Let's take five." }
-],
-[
-  { "from": "human", "value": "I'm very impressed with your work." }, { "from": "gpt", "value": "I'm blown away by your work." }
-],
-[
-  { "from": "human", "value": "That was a fantastic performance." }, { "from": "gpt", "value": "That performance was fire." }
-],
-[
-  { "from": "human", "value": "I'm going to relax now." }, { "from": "gpt", "value": "I'm gonna chill now." }
-],
-[
-  { "from": "human", "value": "That's really important." }, { "from": "gpt", "value": "That's super important." }
-],
-[
-  { "from": "human", "value": "I'm very happy with the results." }, { "from": "gpt", "value": "I'm super happy with the results." }
-],
-[
-  { "from": "human", "value": "Can you please explain that again?" }, { "from": "gpt", "value": "Can you run that by me again?" }
-],
-[
-  { "from": "human", "value": "I'm really enjoying this." }, { "from": "gpt", "value": "I'm loving this." }
-],
-[
-  { "from": "human", "value": "That was very kind of you." }, { "from": "gpt", "value": "That was really sweet of you." }
-],
-[
-  { "from": "human", "value": "I'm feeling very confident." }, { "from": "gpt", "value": "I'm feeling super confident." }
-],
-[
-  { "from": "human", "value": "Can you call me back?" }, { "from": "gpt", "value": "Can you hit me back?" }
-],
-[
-  { "from": "human", "value": "I'm going to start working now." }, { "from": "gpt", "value": "I'm gonna get to work now." }
-],
-[
-  { "from": "human", "value": "That's very interesting." }, { "from": "gpt", "value": "That's super interesting." }
-],
-[
-  { "from": "human", "value": "I'm feeling very proud." }, { "from": "gpt", "value": "I'm super proud." }
-],
-[
-  { "from": "human", "value": "I'm really enjoying my time." }, { "from": "gpt", "value": "I'm having a blast." }
-],
-[
-  { "from": "human", "value": "That was very entertaining." }, { "from": "gpt", "value": "That was super entertaining." }
-],
-[
+  [
+    { "from": "human", "value": "Let's go to the movies tonight." },
+    { "from": "gpt", "value": "Let's hit up the cinema tonight." }
+  ],
+  [
+    { "from": "human", "value": "I don't understand what you mean." },
+    { "from": "gpt", "value": "I'm not vibing with what you're saying." }
+  ],
+  [
+    { "from": "human", "value": "That party was really fun." },
+    { "from": "gpt", "value": "That party was lit." }
+  ],
+  [
+    { "from": "human", "value": "I'm feeling very tired today." },
+    { "from": "gpt", "value": "I'm totally drained today." }
+  ],
+  [
+    { "from": "human", "value": "You are very talented." },
+    { "from": "gpt", "value": "You're mad skilled." }
+  ],
+  [
+    { "from": "human", "value": "Let's take a selfie." },
+    { "from": "gpt", "value": "Let's snap a pic." }
+  ],
+  [
+    { "from": "human", "value": "I'm going to the gym." },
+    { "from": "gpt", "value": "I'm hitting the gym." }
+  ],
+  [
+    { "from": "human", "value": "Can you help me with this?" },
+    { "from": "gpt", "value": "Can you give me a hand with this?" }
+  ],
+  [
+    { "from": "human", "value": "I'm very excited about this." },
+    { "from": "gpt", "value": "I'm super hyped about this." }
+  ],
+  [
+    { "from": "human", "value": "That was really funny." },
+    { "from": "gpt", "value": "That was hilarious." }
+  ],
+  [
+    { "from": "human", "value": "I'll call you later." },
+    { "from": "gpt", "value": "I'll hit you up later." }
+  ],
+  [
+    { "from": "human", "value": "I'm not sure about that." },
+    { "from": "gpt", "value": "I'm lowkey unsure about that." }
+  ],
+  [
+    { "from": "human", "value": "What's your plan for today?" },
+    { "from": "gpt", "value": "What's the move for today?" }
+  ],
+  [
+    { "from": "human", "value": "That was really cool." },
+    { "from": "gpt", "value": "That was dope." }
+  ],
+  [
+    { "from": "human", "value": "Can you give me a ride?" },
+    { "from": "gpt", "value": "Can you give me a lift?" }
+  ],
+  [
+    { "from": "human", "value": "Let's hang out this weekend." },
+    { "from": "gpt", "value": "Let's chill this weekend." }
+  ],
+  [
+    { "from": "human", "value": "I'm going to sleep now." },
+    { "from": "gpt", "value": "I'm hitting the hay now." }
+  ],
+  [
+    { "from": "human", "value": "I'm hungry." },
+    { "from": "gpt", "value": "I'm starving." }
+  ],
+  [
+    { "from": "human", "value": "I'm really happy right now." },
+    { "from": "gpt", "value": "I'm on cloud nine right now." }
+  ],
+  [
+    { "from": "human", "value": "That sounds like a good idea." },
+    { "from": "gpt", "value": "That sounds like a solid plan." }
+  ],
+  [
+    { "from": "human", "value": "I'll be there soon." },
+    { "from": "gpt", "value": "I'll be there in a sec." }
+  ],
+  [
+    { "from": "human", "value": "I don't like that." },
+    { "from": "gpt", "value": "I'm not feeling that." }
+  ],
+  [
+    { "from": "human", "value": "He's really attractive." },
+    { "from": "gpt", "value": "He's a total snack." }
+  ],
+  [
+    { "from": "human", "value": "I'm really angry." },
+    { "from": "gpt", "value": "I'm totally heated." }
+  ],
+  [
+    { "from": "human", "value": "Can we talk?" },
+    { "from": "gpt", "value": "Can we chat?" }
+  ],
+  [
+    { "from": "human", "value": "I'm very busy." },
+    { "from": "gpt", "value": "I'm super swamped." }
+  ],
+  [
+    { "from": "human", "value": "I love this song." },
+    { "from": "gpt", "value": "This song slaps." }
+  ],
+  [
+    { "from": "human", "value": "That movie was scary." },
+    { "from": "gpt", "value": "That movie was terrifying." }
+  ],
+  [
+    { "from": "human", "value": "I need a break." },
+    { "from": "gpt", "value": "I need some chill time." }
+  ],
+  [
+    { "from": "human", "value": "I'm really excited for tomorrow." },
+    { "from": "gpt", "value": "I'm so psyched for tomorrow." }
+  ],
+  [
+    { "from": "human", "value": "That was a big mistake." },
+    { "from": "gpt", "value": "That was a major fail." }
+  ],
+  [
+    { "from": "human", "value": "This is very important." },
+    { "from": "gpt", "value": "This is super crucial." }
+  ],
+  [
+    { "from": "human", "value": "I'm very happy for you." },
+    { "from": "gpt", "value": "I'm stoked for you." }
+  ],
+  [
+    { "from": "human", "value": "Can we go somewhere else?" },
+    { "from": "gpt", "value": "Can we dip to another spot?" }
+  ],
+  [
+    { "from": "human", "value": "That was really good." },
+    { "from": "gpt", "value": "That was fire." }
+  ],
+  [
+    { "from": "human", "value": "I'm very nervous." },
+    { "from": "gpt", "value": "I'm super anxious." }
+  ],
+  [
+    { "from": "human", "value": "I need some help." },
+    { "from": "gpt", "value": "I need some backup." }
+  ],
+  [
+    { "from": "human", "value": "That's amazing." },
+    { "from": "gpt", "value": "That's epic." }
+  ],
+  [
+    { "from": "human", "value": "I really like this." },
+    { "from": "gpt", "value": "I'm digging this." }
+  ],
+  [
+    { "from": "human", "value": "I'm going to be late." },
+    { "from": "gpt", "value": "I'm gonna be late." }
+  ],
+  [
+    { "from": "human", "value": "That's not true." },
+    { "from": "gpt", "value": "That's cap." }
+  ],
+  [
+    { "from": "human", "value": "I'm very tired." },
+    { "from": "gpt", "value": "I'm exhausted." }
+  ],
+  [
+    { "from": "human", "value": "Let's start now." },
+    { "from": "gpt", "value": "Let's get this show on the road." }
+  ],
+  [
+    { "from": "human", "value": "This is very interesting." },
+    { "from": "gpt", "value": "This is super intriguing." }
+  ],
+  [
+    { "from": "human", "value": "I'm feeling sad." },
+    { "from": "gpt", "value": "I'm feeling down." }
+  ],
+  [
+    { "from": "human", "value": "Can you send me a message?" },
+    { "from": "gpt", "value": "Can you shoot me a text?" }
+  ],
+  [
+    { "from": "human", "value": "I'm really excited." },
+    { "from": "gpt", "value": "I'm super stoked." }
+  ],
+  [
+    { "from": "human", "value": "I need to go now." },
+    { "from": "gpt", "value": "I gotta bounce." }
+  ],
+  [
+    { "from": "human", "value": "That was awesome." },
+    { "from": "gpt", "value": "That was sick." }
+  ],
+  [
+    { "from": "human", "value": "I'm very confused." },
+    { "from": "gpt", "value": "I'm totally lost." }
+  ],
+  [
+    { "from": "human", "value": "That was really bad." },
+    { "from": "gpt", "value": "That was trash." }
+  ],
+  [
+    { "from": "human", "value": "I'm very busy right now." },
+    { "from": "gpt", "value": "I'm swamped right now." }
+  ],
+  [
+    { "from": "human", "value": "I'm going to the store." },
+    { "from": "gpt", "value": "I'm heading to the store." }
+  ],
+  [
+    { "from": "human", "value": "That's really expensive." },
+    { "from": "gpt", "value": "That's hella pricey." }
+  ],
+  [
+    { "from": "human", "value": "I'm really excited to see you." },
+    { "from": "gpt", "value": "I can't wait to see you." }
+  ],
+  [
+    { "from": "human", "value": "I'm very surprised." },
+    { "from": "gpt", "value": "I'm shook." }
+  ],
+  [
+    { "from": "human", "value": "That was very fast." },
+    { "from": "gpt", "value": "That was lightning quick." }
+  ],
+  [
+    { "from": "human", "value": "I'm really looking forward to it." },
+    { "from": "gpt", "value": "I'm super pumped for it." }
+  ],
+  [
+    { "from": "human", "value": "I'm very grateful." },
+    { "from": "gpt", "value": "I'm super thankful." }
+  ],
+  [
+    { "from": "human", "value": "Can you wait a moment?" },
+    { "from": "gpt", "value": "Can you hold up a sec?" }
+  ],
+  [
+    { "from": "human", "value": "I'm very hungry." },
+    { "from": "gpt", "value": "I'm starving." }
+  ],
+  [
+    { "from": "human", "value": "I'm really impressed." },
+    { "from": "gpt", "value": "I'm totally blown away." }
+  ],
+  [
+    { "from": "human", "value": "I can't believe it." },
+    { "from": "gpt", "value": "That's unreal." }
+  ],
+  [
+    { "from": "human", "value": "Let's go get some food." },
+    { "from": "gpt", "value": "Let's grab some grub." }
+  ],
+  [
+    { "from": "human", "value": "I'm feeling sick." },
+    { "from": "gpt", "value": "I'm feeling under the weather." }
+  ],
+  [
+    { "from": "human", "value": "I really don't like that." },
+    { "from": "gpt", "value": "I'm not into that." }
+  ],
+  [
+    { "from": "human", "value": "I'm very curious about it." },
+    { "from": "gpt", "value": "I'm super curious about it." }
+  ],
+  [
+    { "from": "human", "value": "I'm really scared." },
+    { "from": "gpt", "value": "I'm terrified." }
+  ],
+  [
+    { "from": "human", "value": "I'm very proud of you." },
+    { "from": "gpt", "value": "I'm so proud of you." }
+  ],
+  [
+    { "from": "human", "value": "That was really boring." },
+    { "from": "gpt", "value": "That was a snoozefest." }
+  ],
+  [
+    { "from": "human", "value": "I'm very happy with this." },
+    { "from": "gpt", "value": "I'm super satisfied with this." }
+  ],
+  [
+    { "from": "human", "value": "That was a really good game." },
+    { "from": "gpt", "value": "That game was fire." }
+  ],
+  [
+    { "from": "human", "value": "Can you meet me later?" },
+    { "from": "gpt", "value": "Can you link up with me later?" }
+  ],
+  [
+    { "from": "human", "value": "I'm very sleepy." },
+    { "from": "gpt", "value": "I'm super tired." }
+  ],
+  [
+    { "from": "human", "value": "Let's go for a walk." },
+    { "from": "gpt", "value": "Let's take a stroll." }
+  ],
+  [
+    { "from": "human", "value": "I'm really busy today." },
+    { "from": "gpt", "value": "I'm hella busy today." }
+  ],
+  [
+    { "from": "human", "value": "I'm feeling very relaxed." },
+    { "from": "gpt", "value": "I'm totally chill." }
+  ],
+  [
+    { "from": "human", "value": "That's really impressive." },
+    { "from": "gpt", "value": "That's mind-blowing." }
+  ],
+  [
+    { "from": "human", "value": "Can you join us?" },
+    { "from": "gpt", "value": "Can you come through?" }
+  ],
+  [
+    { "from": "human", "value": "That was very helpful." },
+    { "from": "gpt", "value": "That was super useful." }
+  ],
+  [
+    { "from": "human", "value": "I'm feeling very tired." },
+    { "from": "gpt", "value": "I'm exhausted." }
+  ],
+  [
+    { "from": "human", "value": "I'm very happy for you." },
+    { "from": "gpt", "value": "I'm so happy for you." }
+  ],
+  [
+    { "from": "human", "value": "I'm going to get some food." },
+    { "from": "gpt", "value": "I'm grabbing some munchies." }
+  ],
+  [
+    { "from": "human", "value": "That's very expensive." },
+    { "from": "gpt", "value": "That's mad pricey." }
+  ],
+  [
+    { "from": "human", "value": "Can we meet up later?" },
+    { "from": "gpt", "value": "Can we link up later?" }
+  ],
+  [
+    { "from": "human", "value": "I don't like this at all." },
+    { "from": "gpt", "value": "I'm not feeling this at all." }
+  ],
+  [
+    { "from": "human", "value": "That was really funny." },
+    { "from": "gpt", "value": "That was a total crack-up." }
+  ],
+  [
+    { "from": "human", "value": "Can you please wait?" },
+    { "from": "gpt", "value": "Can you hang tight?" }
+  ],
+  [
+    { "from": "human", "value": "I'm feeling great today." },
+    { "from": "gpt", "value": "I'm feeling awesome today." }
+  ],
+  [
+    { "from": "human", "value": "Let's take a break." },
+    { "from": "gpt", "value": "Let's take five." }
+  ],
+  [
+    { "from": "human", "value": "I'm very impressed with your work." },
+    { "from": "gpt", "value": "I'm blown away by your work." }
+  ],
+  [
+    { "from": "human", "value": "That was a fantastic performance." },
+    { "from": "gpt", "value": "That performance was fire." }
+  ],
+  [
+    { "from": "human", "value": "I'm going to relax now." },
+    { "from": "gpt", "value": "I'm gonna chill now." }
+  ],
+  [
+    { "from": "human", "value": "That's really important." },
+    { "from": "gpt", "value": "That's super important." }
+  ],
+  [
+    { "from": "human", "value": "I'm very happy with the results." },
+    { "from": "gpt", "value": "I'm super happy with the results." }
+  ],
+  [
+    { "from": "human", "value": "Can you please explain that again?" },
+    { "from": "gpt", "value": "Can you run that by me again?" }
+  ],
+  [
+    { "from": "human", "value": "I'm really enjoying this." },
+    { "from": "gpt", "value": "I'm loving this." }
+  ],
+  [
+    { "from": "human", "value": "That was very kind of you." },
+    { "from": "gpt", "value": "That was really sweet of you." }
+  ],
+  [
+    { "from": "human", "value": "I'm feeling very confident." },
+    { "from": "gpt", "value": "I'm feeling super confident." }
+  ],
+  [
+    { "from": "human", "value": "Can you call me back?" },
+    { "from": "gpt", "value": "Can you hit me back?" }
+  ],
+  [
+    { "from": "human", "value": "I'm going to start working now." },
+    { "from": "gpt", "value": "I'm gonna get to work now." }
+  ],
+  [
+    { "from": "human", "value": "That's very interesting." },
+    { "from": "gpt", "value": "That's super interesting." }
+  ],
+  [
+    { "from": "human", "value": "I'm feeling very proud." },
+    { "from": "gpt", "value": "I'm super proud." }
+  ],
+  [
+    { "from": "human", "value": "I'm really enjoying my time." },
+    { "from": "gpt", "value": "I'm having a blast." }
+  ],
+  [
+    { "from": "human", "value": "That was very entertaining." },
+    { "from": "gpt", "value": "That was super entertaining." }
+  ],
+  [
     { "from": "human", "value": "That's very interesting" },
     { "from": "gpt", "value": "No cap, that's bussin'" }
   ],
@@ -657,6 +762,5 @@
   [
     { "from": "human", "value": "That's very cool" },
     { "from": "gpt", "value": "That's rad" }
-  ],
+  ]
 ]
-
