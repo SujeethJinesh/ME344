@@ -9,4 +9,4 @@
 
 source ~/codes/python/python-venv/bin/activate
 EXEC_DIR=$HOME/ME344
-hostname && jupyter-notebook --no-browser --notebook-dir=$EXEC_DIR
+hostname && ls ../ && jupyter-notebook --no-browser --notebook-dir=$EXEC_DIR
