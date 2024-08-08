@@ -1,0 +1,5 @@
+hpcc-gpu-4-1
+codes
+labs
+ME344
+/var/spool/slurmd/job43304/slurm_script: line 12: jupyter-notebook: command not found
