@@ -9,4 +9,6 @@
 
 source ~/codes/python/python-venv/bin/activate
 EXEC_DIR=$HOME/ME344
-hostname && jupyter-notebook --no-browser --notebook-dir=$EXEC_DIR
+# hostname && apptainer exec --nv container.img jupyter-notebook --no-browser --port=9999 --notebook-dir=$EXEC_DIR
+# apptainer exec container.img jupyter nbconvert final_project_train.ipynb --to python
+apptainer exec --nv container.img python3 final_project_train.py
