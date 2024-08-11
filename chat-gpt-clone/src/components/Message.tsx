@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface MessageProps {
+export interface MessageProps {
   text: string;
   isUser: boolean;
 }
@@ -8,7 +8,10 @@ interface MessageProps {
 const Message: React.FC<MessageProps> = ({ text, isUser }) => {
   return (
     <div className={`Message ${isUser ? 'user' : 'bot'}`}>
-      <p>{text}</p>
+      <div className='message-container'>
+        <p className='message-label'>{isUser ? 'You' : 'Gen-Z Bot'}</p>
+        <p className='message-text'>{text}</p>
+      </div>
     </div>
   );
 };
