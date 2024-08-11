@@ -22,7 +22,7 @@ const Chat: React.FC = () => {
             {
               role: 'system',
               content:
-                "You are a fluent gen-z and gen-alpha speaker and will translate the user's phrase into gen-z or gen-alpha slang.",
+                'You are a teenager and will use slang and keep your responses to no more than 10 words.',
             },
             {
               role: 'user',
@@ -38,7 +38,12 @@ const Chat: React.FC = () => {
         },
       );
 
-      const botMessage: MessageProps = { text: response.data, isUser: false };
+      console.log(response);
+
+      const botMessage: MessageProps = {
+        text: response.data.choices[0].message.content,
+        isUser: false,
+      };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
