@@ -1,29 +1,48 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Message from './Message';
+import Message, { MessageProps } from './Message';
 import ChatInput from './ChatInput';
 
-interface Message {
-  text: string;
-  isUser: boolean;
-}
-
 const Chat: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<MessageProps[]>([]);
   const [isSending, setIsSending] = useState(false);
 
   const handleSend = async (message: string) => {
-    const newMessage: Message = { text: message, isUser: true };
+    const newMessage: MessageProps = { text: message, isUser: true };
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setIsSending(true);
 
     try {
-      const response = await axios.post('YOUR_API_ENDPOINT', { message });
-      const botMessage: Message = { text: response.data, isUser: false };
+      const response = await axios.post(
+        '/v1/chat',
+        {
+          model: 'llama3.1',
+          stream: 'false',
+          messages: [
+            {
+              role: 'system',
+              content:
+                "You are a fluent gen-z and gen-alpha speaker and will translate the user's phrase into gen-z or gen-alpha slang.",
+            },
+            {
+              role: 'user',
+              content: message,
+            },
+          ],
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true,
+        },
+      );
+
+      const botMessage: MessageProps = { text: response.data, isUser: false };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
-      const errorMessage: Message = {
+      const errorMessage: MessageProps = {
         text: 'Failed to send message. Please try again.',
         isUser: false,
       };

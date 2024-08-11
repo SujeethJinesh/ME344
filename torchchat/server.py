@@ -5,7 +5,6 @@
 # LICENSE file in the root directory of this source tree.
 
 import json
-
 from dataclasses import asdict
 from typing import Dict, List, Union
 
@@ -14,44 +13,56 @@ from api.models import get_model_info_list, retrieve_model_info
 
 from build.builder import BuilderArgs, TokenizerArgs
 from flask import Flask, request, Response
+from flask_cors import CORS  # Importing CORS
 from generate import GeneratorArgs
 
 OPENAI_API_VERSION = "v1"
-
 
 def create_app(args):
     """
     Creates a flask app that can be used to serve the model as a chat API.
     """
     app = Flask(__name__)
+    CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
 
     gen: OpenAiApiGenerator = initialize_generator(args)
 
     def _del_none(d: Union[Dict, List]) -> Union[Dict, List]:
         """Recursively delete None values from a dictionary."""
-        if type(d) is dict:
+        if isinstance(d, dict):
             return {k: _del_none(v) for k, v in d.items() if v}
-        elif type(d) is list:
+        elif isinstance(d, list):
             return [_del_none(v) for v in d if v]
         return d
+
+    @app.errorhandler(Exception)
+    def handle_error(e):
+        print(f"An error occurred: {str(e)}")
+        return str(e), 500
+
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+        return response
+
+    @app.route("/{OPENAI_API_VERSION}/chat", methods=["OPTIONS"])
+    def options_handler(path):
+        response = Response()
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type"
+        return response
 
     @app.route(f"/{OPENAI_API_VERSION}/chat", methods=["POST"])
     def chat_endpoint():
         """
         Endpoint for the Chat API. This endpoint is used to generate a response to a user prompt.
         This endpoint emulates the behavior of the OpenAI Chat API. (https://platform.openai.com/docs/api-reference/chat)
-
-        ** Warning ** : Not all arguments of the CompletionRequest are consumed.
-
-        See https://github.com/pytorch/torchchat/issues/973 and the OpenAiApiGenerator class for more details.
-
-        If stream is set to true, the response will be streamed back as a series of CompletionResponseChunk objects. Otherwise,
-        a single CompletionResponse object will be returned.
         """
-
         print(" === Completion Request ===")
 
-        # Parse the request in to a CompletionRequest object
+        # Parse the request into a CompletionRequest object
         data = request.get_json()
         req = CompletionRequest(**data)
 
@@ -90,7 +101,6 @@ def create_app(args):
 
     return app
 
-
 def initialize_generator(args) -> OpenAiApiGenerator:
     builder_args = BuilderArgs.from_args(args)
     speculative_builder_args = BuilderArgs.from_speculative_args(args)
@@ -108,7 +118,6 @@ def initialize_generator(args) -> OpenAiApiGenerator:
         draft_quantize=args.draft_quantize,
     )
 
-
 def main(args):
     app = create_app(args)
-    app.run()
+    app.run(host="0.0.0.0", port=5001)
