@@ -46,6 +46,7 @@ def create_app(args):
         response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
         return response
 
+    @app.route("/chat", methods=["OPTIONS"])
     @app.route("/{OPENAI_API_VERSION}/chat", methods=["OPTIONS"])
     def options_handler(path):
         response = Response()
@@ -54,6 +55,7 @@ def create_app(args):
         response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type"
         return response
 
+    @app.route("/chat", methods=["POST"])
     @app.route(f"/{OPENAI_API_VERSION}/chat", methods=["POST"])
     def chat_endpoint():
         """
@@ -88,10 +90,12 @@ def create_app(args):
 
             return json.dumps(_del_none(asdict(response)))
 
+    @app.route(f"/models", methods=["GET"])
     @app.route(f"/{OPENAI_API_VERSION}/models", methods=["GET"])
     def models_endpoint():
         return json.dumps(asdict(get_model_info_list(args)))
 
+    @app.route(f"/models/<model_id>", methods=["GET"])
     @app.route(f"/{OPENAI_API_VERSION}/models/<model_id>", methods=["GET"])
     def models_retrieve_endpoint(model_id):
         if response := retrieve_model_info(args, model_id):
