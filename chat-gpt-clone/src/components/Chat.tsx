@@ -22,11 +22,14 @@ const Chat: React.FC = () => {
             {
               role: 'system',
               content:
-                'You are a teenager and will use slang and keep your responses to no more than 10 words.',
+                'Translate any sentences into gen-z slang. Just output the result with no explanation.',
             },
             {
               role: 'user',
-              content: message,
+              content:
+                'Translate the following sentence into gen-z slang. Just output the result with no explanation. This is the sentence "' +
+                message +
+                '"',
             },
           ],
         },
@@ -37,8 +40,6 @@ const Chat: React.FC = () => {
           withCredentials: true,
         },
       );
-
-      console.log(response);
 
       const botMessage: MessageProps = {
         text: response.data.choices[0].message.content,

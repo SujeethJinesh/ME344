@@ -5,6 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 
 import json
+import re
 from dataclasses import asdict
 from typing import Dict, List, Union
 
@@ -67,6 +68,11 @@ def create_app(args):
         # Parse the request into a CompletionRequest object
         data = request.get_json()
         req = CompletionRequest(**data)
+
+        match = re.search(r'"(.*?)"', req.messages[1]['content'])
+        if match:
+          extracted_value = match.group(1)
+          print(f" content: {extracted_value}")
 
         if data.get("stream") == "true":
 
