@@ -14,35 +14,21 @@ const Chat: React.FC = () => {
 
     try {
       const response = await axios.post(
-        '/v1/chat',
+        'http://localhost:11434/api/generate',
         {
           model: 'llama3.1',
-          stream: 'false',
-          messages: [
-            {
-              role: 'system',
-              content:
-                'Translate any sentences into gen-z slang. Just output the result with no explanation.',
-            },
-            {
-              role: 'user',
-              content:
-                'Translate the following sentence into gen-z slang. Just output the result with no explanation. This is the sentence "' +
-                message +
-                '"',
-            },
-          ],
+          prompt: `Translate the following sentence into gen-z slang. Just output the result with no explanation. This is the sentence: "${message}"`,
+          stream: false,
         },
         {
           headers: {
             'Content-Type': 'application/json',
           },
-          withCredentials: true,
         },
       );
 
       const botMessage: MessageProps = {
-        text: response.data.choices[0].message.content,
+        text: response.data.response,
         isUser: false,
       };
       setMessages((prevMessages) => [...prevMessages, botMessage]);

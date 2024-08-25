@@ -1,0 +1,6 @@
+langchain
+chromadb
+pypdf
+langchain-community
+pandas
+chromadb-client
