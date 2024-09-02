@@ -2,15 +2,51 @@
 
 Author: [Sujeeth Jinesh](https://www.linkedin.com/in/SujeethJinesh/)
 
-This project will involve building a RAG pipeline for a chatbot you will create. This tutorial is heavily inspired by content from [pixegami](https://www.youtube.com/watch?v=2TJxpyO3ei4).
+This project will teach you how to build a Retrieval Augmented Generation (RAG) chatbot. It can be used with text based data to enhance your Large Language Model (LLM). This technique is commonly referred to as LLM + RAG. This tutorial is heavily inspired by content from [pixegami](https://www.youtube.com/watch?v=2TJxpyO3ei4).
 
-## TODO: Add high level description of LLM + RAG project and overview.
+## Technical details of LLM + RAG
 
-In this project, you will build a slang translator. We will be using [this dataset](https://www.kaggle.com/datasets/therohk/urban-dictionary-words-dataset?resource=download) as our slang data.
+### What problem does RAG solve?
+
+Standard LLMs do not have access to any outside data when generating responses to users, which is quite problematic when we want to augment our LLM to work with new information (e.g. breaking news).
+
+One possible way to add this data is to continuously finetune our LLM (e.g. [LoRA](https://arxiv.org/abs/2106.09685)), but this is incredibly expensive, difficult, and may require downtime for an application. Often times, it may also not even be necessary as there's still a chance of hallucination.
+
+RAG is designed with this in mind - being fast to add information without downtime, easy to deploy, and does not require significant compute.
+
+### How does RAG work conceptually?
+
+Think of a student as an LLM. That student will take an exam--think of the exam questions as a user's queries. The student is also allowed to build a cheatsheet before the exam.
+
+When the student takes the exam (i.e. answers a query), they will look to their cheatsheet, and add in relevant information, potentially citing information.
+
+Consider an example question of "What major event happened today?".
+
+The student can "augment" the question by adding in information from their cheatsheet and transform it into something like "CONTEXT: Stanford researchers announce creation of an Artificial General Intelligence | QUESTION: What major event happened today?". This makes it much easier to answer the question.
+
+The mechanics are slightly different for LLMs, but the concept is the same.
+
+### How does RAG work mechanistically?
+
+RAG enhances our LLM by passing the user's query to a "vector database", returning potentially relevant information, and then "augmenting" our user's query to cite this relevant information.
+
+The vector database is key here, because when our system performs lookups, we are embedding the question in a vector space and looking for similar values near it. These similar values are then used to augment our prompt like the example above: "CONTEXT: Stanford researchers announce creation of an Artificial General Intelligence | QUESTION: What major event happened today?" (note, we can add as many entries as fits within our LLM's context length).
+
+Our vector database is filled up with files or documents we give it. This is done by first chunking the data (making smaller chunks of the data) and then creating embeddings for it (vector representations) to place it in the database. The database can be updated anytime and independently of the LLM (for our purposes).
+
+Simple right? Let's dive into the project!
+
+## Project Overview
+
+In this project, you will build a slang translator using Llama 3.1 and RAG. We will be using [this dataset](https://www.kaggle.com/datasets/therohk/urban-dictionary-words-dataset?resource=download) as our slang data.
+
+We encourage you to use any model and data of your choice! [Ollama](https://ollama.com/library) is a great and easy place to try out various models, and [Kaggle](https://www.kaggle.com/datasets) is a great place to look for datasets.
+
+# Getting Started
 
 ## Accessing your cluster
 
-Ssh into your assigned cluster.
+SSH into your assigned cluster.
 
 Execute `su - student` to switch to the student user.
 
@@ -40,13 +76,15 @@ You can also add `source python-venv/bin/activate` to your `.bashrc` so you'll a
   This script is run at the beginning of login, and allows us to define some actions we want to take before we get control of the terminal. In this case, we want to activate our python environment so we don't forget to do this later and mess with system packages accidentally.
 </details>
 
-## TODO: Download Ollama
+## Download Ollama
+
+Ollama is our model manager, and will make development using specific models significantly easier.
 
 ```
 curl -fsSL https://ollama.com/install.sh | sh
 ```
 
-Then run ollama locally (Necessary for the embeddings step). This will download the 8B model.
+Next, we need to run our Ollama locally. This will download the 8B model.
 
 ```
 ollama run llama3.1
@@ -58,7 +96,11 @@ You may even want to try the 70B model if your GPU has ~40GB of VRAM because it 
 ollama run llama3.1:70b
 ```
 
-Ollama will be running on `localhost:11434`.
+Once your model is downloaded, Ollama will run on `localhost:11434`.
+
+This is what we'll be using to query our model
+
+######
 
 Create a file called `jupyter_submit.slurm`, and put in the following.
 
@@ -67,7 +109,7 @@ Create a file called `jupyter_submit.slurm`, and put in the following.
 #SBATCH --job-name="Jupyter"                # Job name
 #SBATCH --mail-user=<email>@stanford.edu    # Email address
 #SBATCH --mail-type=NONE                    # Mail notification type (NONE, BEGIN, END, FAIL, ALL)
-#SBATCH --partition=gpu-pascal              # Node partition, use gpu-pascal for gpus
+#SBATCH --partition=gpu-pascal              # Node partition, use gpu-pascal for Nvidia Pascal architecture gpus
 #SBATCH --nodes=1                           # Number of nodes requested
 #SBATCH --ntasks=1                          # Number of processes
 #SBATCH --time=03:00:00                     # Time limit request
