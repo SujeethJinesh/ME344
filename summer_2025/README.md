@@ -121,7 +121,7 @@ EXEC_DIR=$HOME/ME344
 apptainer exec --nv container.img python3 final_project_train.py
 ```
 
-Launch the job with `sbatch jupyter_submit.slurm` This will launch an apptainer with `final_project_train.py`. Note you may need to cancel any other pending jobs with `scancel <job-id>`.
+Launch the job with `sbatch jupyter_submit.slurm`. Note you may need to cancel any other pending jobs with `scancel <job-id>`.
 
 This will produce a slurm-<job-id>.out. Then you can run the following command in a separate window:
 
@@ -129,10 +129,32 @@ This will produce a slurm-<job-id>.out. Then you can run the following command i
 
 Then you can find the port forwarded address of the jupyter notebook with `egrep -w 'compute|localhost'  slurm-*.out`. Now you should be able to connect with the cluster and run jobs.
 
-From here you can open up final_project_train.ipynb and run all the cells.
+From here you can open up rag.ipynb and run through the cells.
 
-### Download Model (Llama 3.1 or others)
-
-## Build RAG pipeline
+Come back when you finished setting up your RAG pipeline.
 
 ## Serve locally
+
+Now we want to serve our model locally. To do this, we have provided an easy to interact with frontend so we can test out our model.
+
+cd into `chat-gpt-clone`
+
+To start the development server, run `npm install` and then run `npm start` this will create your dev site on `localhost:3000`.
+
+We need to port forward port 3000 to our local 3000, so we can do that by doing the following:
+
+`ssh -L 3000:localhost:3000 student@hpcc-cluster-[C] -t ssh -L 3000:localhost:3000 compute-1-1`
+
+We'll also want to port forward the Ollama config to make sure that we are using the proper backend.
+
+`ssh -L 11434:localhost:11434 student@hpcc-cluster-[C] -t ssh -L 11434:localhost:11434 compute-1-1`
+
+If you navigate to `localhost:3000` on your computer, you'll see the chat interface!
+
+Try playing around with the chat interface and even try making changes to the system prompt in `Chat.tsx`.
+
+## Look at metrics
+
+You'll be able to use `htop` in your cluster to see how demanding the usage is whenever you submit a query to your model, you should see high GPU usage from your python program. This indicates that you're using your GPU!
+
+We encourage you to try out various different models, parameter sizes, and data to see how this effects the GPU usage.
