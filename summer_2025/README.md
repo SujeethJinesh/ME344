@@ -44,21 +44,40 @@ We encourage you to use any model and data of your choice! [Ollama](https://olla
 
 # Getting Started
 
+## Enabling Internet on your GPU cluster
+
+Reach out to Professor Jones to enable internet on your cluster, otherwise you will not be able to download models and use the internet.
+
 ## Accessing your cluster
 
-SSH into your assigned cluster.
-
-Execute `su - student` to switch to the student user.
+SSH into your assigned cluster as root. It's important to be a root user because we will need to install Ollama, which requires root access.
 
 ## Download requirements
 
+### Download Ollama
+
+[Ollama](https://ollama.com/download/linux) is our model manager, and will make development using specific models significantly easier, make sure you are running as root, and then execute the following command to download Ollama.
+
+```
+curl -fsSL https://ollama.com/install.sh | sh
+```
+
+Now switch back to the student user by running `su - student`. The rest of these commands will be run as the `student` user.
+
 ### Create a virtual environment
+
+While running as the `student` user, you will want to create a virtual environment to manage dependencies.
 
 If you have not already created a virtual environment before, paste the following into your terminal. This will create a python3.11 virtual environment called "python-venv", and will activate the virtual environment.
 
 ```
+# Create a folder for your python environment
 mkdir -p ~/codes/python && cd ~/codes/python
+
+# Create the actual python environment & call it "python-venv"
 python3.11 -m venv python-venv
+
+# Activate your python environment right now.
 source python-venv/bin/activate
 ```
 
@@ -76,14 +95,6 @@ You can also add `source python-venv/bin/activate` to your `.bashrc` so you'll a
   This script is run at the beginning of login, and allows us to define some actions we want to take before we get control of the terminal. In this case, we want to activate our python environment so we don't forget to do this later and mess with system packages accidentally.
 </details>
 
-## Download Ollama
-
-Ollama is our model manager, and will make development using specific models significantly easier.
-
-```
-curl -fsSL https://ollama.com/install.sh | sh
-```
-
 Next, we need to run our Ollama locally. This will download the 8B model.
 
 ```
@@ -96,13 +107,27 @@ You may even want to try the 70B model if your GPU has ~40GB of VRAM because it 
 ollama run llama3.1:70b
 ```
 
-Once your model is downloaded, Ollama will run on `localhost:11434`.
+You may notice that Ollama doesn't detect any GPUs, and that's fine. We'll fix that later.
 
-This is what we'll be using to query our model
+After the model is downloaded, you'll get a prompt to start interacting with the model. Go ahead and prompt it!
 
-######
+Whenever you want to exit the chat, you can type `/bye` to end the conversation.
 
-Create a file called `jupyter_submit.slurm`, and put in the following.
+Ollama will also be running on `localhost:11434` in the background.
+
+This localhost address is what we'll be using to query our model.
+
+## Implementing RAG
+
+### Creating a SLURM script
+
+Use `pip` to install the package named notebook
+
+Create a directory using mkdir named `project-5`
+
+Change to the `project-5` directory
+
+Create a Slurm script to launch Jupyter Notebook on compute-1-1. Make sure you are in the `$HOME/project-5` directory (command to execute is pwd). Name the script `jupyter_submit.slurm`:
 
 ```
 #!/bin/bash
@@ -115,10 +140,8 @@ Create a file called `jupyter_submit.slurm`, and put in the following.
 #SBATCH --time=03:00:00                     # Time limit request
 
 source ~/codes/python/python-venv/bin/activate
-EXEC_DIR=$HOME/ME344
-# hostname && apptainer exec --nv container.img jupyter-notebook --no-browser --port=9999 --notebook-dir=$EXEC_DIR
-# apptainer exec container.img jupyter nbconvert final_project_train.ipynb --to python
-apptainer exec --nv container.img python3 final_project_train.py
+EXEC_DIR=$HOME/project-5
+hostname && jupyter-notebook --no-browser --notebook-dir=$EXEC_DIR
 ```
 
 Launch the job with `sbatch jupyter_submit.slurm`. Note you may need to cancel any other pending jobs with `scancel <job-id>`.
@@ -129,9 +152,18 @@ This will produce a slurm-<job-id>.out. Then you can run the following command i
 
 Then you can find the port forwarded address of the jupyter notebook with `egrep -w 'compute|localhost'  slurm-*.out`. Now you should be able to connect with the cluster and run jobs.
 
-From here you can open up rag.ipynb and run through the cells.
+The output will look something like this:
 
-Come back when you finished setting up your RAG pipeline.
+```
+...
+slurm-103.out:compute-1-1
+slurm-103.out:[I 18:40:29.846 NotebookApp] http://localhost:8888/?token=c11be5afa5cddd73548d8ff73786291202a37868d5c18451
+slurm-103.out:        http://localhost:8888/?token=c11be5afa5cddd73548d8ff73786291202a37868d5c18451
+```
+
+From here you can copy the notebook from [here (TODO ADD LINK)]() named `rag.ipynb` and run through the cells.
+
+Come back when you finished setting up your RAG pipeline!
 
 ## Serve locally
 
