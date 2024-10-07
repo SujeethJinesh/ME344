@@ -125,6 +125,10 @@ We'll be using a special embedding model for our vector database. In order for u
 
 We'll want to create our vector database and have it run locally so we can store our documents there. To do this, start it in a new terminal with `chroma run --host localhost --port 8000 --path ./chroma`
 
+In order for us to be able to access this vector database locally as well, we'll want to port forward the vector database.
+
+`ssh -L 8000:localhost:8000 student@hpcc-cluster-[C] -t ssh -L 8000:localhost:8000 compute-1-1`
+
 ## Implementing RAG
 
 ### Creating a SLURM script
@@ -179,7 +183,9 @@ Come back when you finished setting up your RAG pipeline!
 
 ## Serve locally
 
-Now we want to serve our model locally. To do this, we have provided an easy to interact with frontend so we can test out our model.
+Now that we've updated our vector database, we want our model to use that when asked for queries. To do this, we will make a request to our vector database when the user gives us a query, append that information we received from the database, and then send that whole prompt off to the model!
+
+We have provided an easy to interact with frontend so we can test out our model.
 
 cd into `chat-gpt-clone`
 
@@ -195,10 +201,20 @@ We'll also want to port forward the Ollama config to make sure that we are using
 
 If you navigate to `localhost:3000` on your computer, you'll see the chat interface!
 
-Try playing around with the chat interface and even try making changes to the system prompt in `Chat.tsx`.
+Try playing around with the chat interface. This chat interface is missing a key feature though, it's connected to your backend model but does not actually use any of the data we stored in our vector database.
+
+To use our vector database, we have a little bit of work to do. You will see that there's a file called `Rag.tsx`, this file is where you'll be making some small code changes.
+
+We will update the code to connect to our backend vector database, get our embedding data, and augment it to our user generated query.
+
+# TODO finish this explanation
+
+Lastly, one way to tune the model is to try making changes to the system prompt in `Chat.tsx`. You can instruct the model to behave in some way.
 
 ## Look at metrics
 
 You'll be able to use `htop` in your cluster to see how demanding the usage is whenever you submit a query to your model, you should see high GPU usage from your python program. This indicates that you're using your GPU!
 
-We encourage you to try out various different models, parameter sizes, and data to see how this effects the GPU usage.
+We encourage you to try out various different models, parameter sizes, data, and system prompts to see how this effects the GPU usage, accuracy, speed, etc!
+
+We're excited to see how you choose to adapt this code!
