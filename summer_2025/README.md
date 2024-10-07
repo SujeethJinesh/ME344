@@ -121,11 +121,13 @@ This localhost address is what we'll be using to query our model.
 
 ### Creating a SLURM script
 
-Use `pip` to install the package named notebook
+Use `pip` to install the package named `notebook`.
 
-Create a directory using mkdir named `project-5`
+You'll want to clone the directory for this project for convenience (TODO: Make the repository called project-5).
 
-Change to the `project-5` directory
+Change to the `project-5` directory.
+
+You should also install all the requirements for the rest of the project using pip. You can do this by doing `pip install -r requirements.txt`
 
 Create a Slurm script to launch Jupyter Notebook on compute-1-1. Make sure you are in the `$HOME/project-5` directory (command to execute is pwd). Name the script `jupyter_submit.slurm`:
 
@@ -150,7 +152,7 @@ This will produce a slurm-<job-id>.out. Then you can run the following command i
 
 `ssh -L 8888:localhost:8888 student@hpcc-cluster-[C] -t ssh -L 8888:localhost:8888 compute-1-1`.
 
-Then you can find the port forwarded address of the jupyter notebook with `egrep -w 'compute|localhost'  slurm-*.out`. Now you should be able to connect with the cluster and run jobs.
+Then you can find the port forwarded address of the jupyter notebook with `egrep -w 'compute|localhost'  slurm-*.out`.
 
 The output will look something like this:
 
@@ -160,6 +162,8 @@ slurm-103.out:compute-1-1
 slurm-103.out:[I 18:40:29.846 NotebookApp] http://localhost:8888/?token=c11be5afa5cddd73548d8ff73786291202a37868d5c18451
 slurm-103.out:        http://localhost:8888/?token=c11be5afa5cddd73548d8ff73786291202a37868d5c18451
 ```
+
+Now you should be able to connect with the cluster and run jobs by following the link. In this case it's `http://localhost:8888/?token=c11be5afa5cddd73548d8ff73786291202a37868d5c18451`.
 
 From here you can copy the notebook from [here (TODO ADD LINK)]() named `rag.ipynb` and run through the cells.
 
