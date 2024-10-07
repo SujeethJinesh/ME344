@@ -117,6 +117,14 @@ Ollama will also be running on `localhost:11434` in the background.
 
 This localhost address is what we'll be using to query our model.
 
+### Downloading Embedding Model
+
+We'll be using a special embedding model for our vector database. In order for us to get that model we need to pull it from ollama. Run the command `ollama pull nomic-embed-text`.
+
+### Starting our Vector Database
+
+We'll want to create our vector database and have it run locally so we can store our documents there. To do this, start it in a new terminal with `chroma run --host localhost --port 8000 --path ./chroma`
+
 ## Implementing RAG
 
 ### Creating a SLURM script
