@@ -3,4 +3,5 @@ chromadb
 pypdf
 langchain-community
 pandas
-chromadb-client
+rapidfuzz
+sentence_transformers
