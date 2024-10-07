@@ -1,3 +1,5 @@
+**/cache/**
+**/chroma/**
 summer_2025/data/*
 huggingface_model/*
 .DS_Store
