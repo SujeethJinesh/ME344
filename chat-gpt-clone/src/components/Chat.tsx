@@ -2,22 +2,27 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Message, { MessageProps } from './Message';
 import ChatInput from './ChatInput';
+import Rag from './Rag';
 
 const Chat: React.FC = () => {
   const [messages, setMessages] = useState<MessageProps[]>([]);
   const [isSending, setIsSending] = useState(false);
+  const [pendingMessage, setPendingMessage] = useState<string>('');
 
-  const handleSend = async (message: string) => {
+  const handleSend = (message: string) => {
     const newMessage: MessageProps = { text: message, isUser: true };
     setMessages((prevMessages) => [...prevMessages, newMessage]);
     setIsSending(true);
+    setPendingMessage(message);
+  };
 
+  const handleAugmentedQuery = async (augmentedQuery: string) => {
     try {
       const response = await axios.post(
         'http://localhost:11434/api/generate',
         {
           model: 'llama3.1',
-          prompt: `Translate the following sentence into gen-z slang. Just output the result with no explanation. This is the sentence: "${message}"`,
+          prompt: augmentedQuery,
           stream: false,
         },
         {
@@ -41,6 +46,7 @@ const Chat: React.FC = () => {
       setMessages((prevMessages) => [...prevMessages, errorMessage]);
     } finally {
       setIsSending(false);
+      setPendingMessage('');
     }
   };
 
@@ -52,6 +58,9 @@ const Chat: React.FC = () => {
         ))}
       </div>
       <ChatInput onSend={handleSend} isSending={isSending} />
+      {pendingMessage && (
+        <Rag query={pendingMessage} onAugmentedQuery={handleAugmentedQuery} />
+      )}
     </div>
   );
 };
