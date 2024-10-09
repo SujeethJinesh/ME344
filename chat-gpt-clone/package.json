@@ -8,13 +8,16 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.104",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "axios": "^1.7.3",
+    "chromadb": "^1.9.2",
+    "chromadb-default-embed": "^2.13.2",
     "http-proxy-middleware": "^3.0.0",
+    "openai": "^4.67.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "react-spinners": "^0.14.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
@@ -44,6 +47,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.25.7",
     "@types/express": "^4.17.21",
     "@types/http-proxy-middleware": "^0.19.3"
   }

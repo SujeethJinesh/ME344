@@ -201,7 +201,7 @@ We'll also want to port forward the Ollama config to make sure that we are using
 
 If you navigate to `localhost:3000` on your computer, you'll see the chat interface!
 
-Try playing around with the chat interface. This chat interface is missing a key feature though, it's connected to your backend model but does not actually use any of the data we stored in our vector database.
+Try playing around with the chat interface. This chat interface is missing a key feature though, it's connected to your backend model but does not actually use any of the data we stored in our vector database!
 
 To use our vector database, we have a little bit of work to do. You will see that there's a file called `Rag.tsx`, this file is where you'll be making some small code changes.
 
