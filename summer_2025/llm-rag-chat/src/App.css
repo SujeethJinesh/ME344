@@ -1,0 +1,18 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #1e1e2f;
+  color: #ffffff;
+}
+
+.main {
+  display: flex;
+  flex-grow: 1;
+  position: relative;
+}
+
+.chatbox {
+  flex-grow: 1;
+  margin-right: 300px; /* Width of the sidebar */
+}

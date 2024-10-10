@@ -1,0 +1,52 @@
+.inputbar {
+  display: flex;
+  padding: 10px;
+  background-color: #2c2c54;
+}
+
+.inputbar input {
+  flex-grow: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #1e1e2f;
+  color: #ffffff;
+}
+
+.inputbar input:disabled {
+  background-color: #555;
+}
+
+.inputbar button {
+  margin-left: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #706fd3;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.inputbar button:disabled {
+  background-color: #888;
+  cursor: not-allowed;
+}
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #888;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

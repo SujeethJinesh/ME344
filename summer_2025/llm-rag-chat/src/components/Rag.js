@@ -1,19 +1,16 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { ChromaClient, OllamaEmbeddingFunction } from 'chromadb';
-// import { IncludeEnum } from 'chromadb/dist/chromadb';
 
-interface RagProps {
-  query: string;
-  onAugmentedQuery: (augmentedQuery: string) => void;
-}
-
-const Rag: React.FC<RagProps> = ({ query, onAugmentedQuery }) => {
+const Rag = ({ query, onAugmentedQuery }) => {
   const fetchAugmentedQuery = async () => {
     try {
       // Initialize the ChromaDB client
       const client = new ChromaClient({
-        path: 'http://localhost:3000',
+        path: 'http://localhost:8000',
       });
+
+      const collections = await client.listCollections();
+      console.log('Available collections: ', collections);
 
       const embedder = new OllamaEmbeddingFunction({
         url: 'http://localhost:11434/api/embeddings',
@@ -30,30 +27,30 @@ const Rag: React.FC<RagProps> = ({ query, onAugmentedQuery }) => {
       const results = await collection.query({
         queryTexts: [query],
         nResults: 2,
-        // include: [IncludeEnum.Documents],
       });
 
       // Process the results
       let augmentedQuery = query;
+      let context = '';
 
       if (results && results.documents) {
         // Concatenate the retrieved documents to create context
-        const context = results.documents.flat().join(' ');
+        context = results.documents.flat().join(' ');
         // Augment the user's query with the retrieved context
         augmentedQuery = `Use the following information to answer the question:\n\n${context}\n\nQuestion: ${query}`;
       }
 
-      // Pass the augmented query back to the parent component
-      onAugmentedQuery(augmentedQuery);
+      // Pass the augmented query and context back to the parent component
+      onAugmentedQuery(augmentedQuery, context);
     } catch (error) {
       console.error('Error querying ChromaDB:', error);
-      onAugmentedQuery(query); // Fallback to original query if error occurs
+      onAugmentedQuery(query, ''); // Fallback to original query if error occurs
     }
   };
 
-  // Fetch the augmented query when the component mounts or query changes
-  React.useEffect(() => {
+  useEffect(() => {
     fetchAugmentedQuery();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
   return null; // This component doesn't render anything

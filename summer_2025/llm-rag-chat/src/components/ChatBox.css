@@ -1,0 +1,8 @@
+.chatbox {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #1e1e2f;
+}
