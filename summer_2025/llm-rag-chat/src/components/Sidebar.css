@@ -1,0 +1,11 @@
+.sidebar {
+  position: absolute;
+  right: 0;
+  top: 70px; /* Adjust based on header height */
+  width: 300px;
+  height: calc(100% - 70px);
+  background-color: #2c2c54;
+  color: #ffffff;
+  padding: 10px;
+  overflow-y: auto;
+}

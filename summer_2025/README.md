@@ -123,7 +123,13 @@ We'll be using a special embedding model for our vector database. In order for u
 
 ### Starting our Vector Database
 
-We'll want to create our vector database and have it run locally so we can store our documents there. To do this, start it in a new terminal with `chroma run --host localhost --port 8000 --path ./chroma`
+We'll want to create our vector database and have it run locally so we can store our documents there.
+
+In order to allow for requests from our other chat interfaces, we'll allow Cross Origin Resource requests from our soon to be web server. We can do this by running:
+
+`export CHROMA_SERVER_CORS_ALLOW_ORIGINS='["http://localhost:3000"]'`
+
+Then we can start our vector databse. Start it in a new terminal with `chroma run --host localhost --port 8000 --path ./chroma`
 
 In order for us to be able to access this vector database locally as well, we'll want to port forward the vector database.
 
