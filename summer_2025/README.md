@@ -86,7 +86,7 @@ We encourage you to use any model and data of your choice! [Ollama](https://olla
 
 ## Enabling Internet on your GPU cluster
 
-Reach out to Professor Jones to enable internet on your cluster, otherwise you will not be able to download models and use the internet.
+Reach out to Professor Jones to enable internet on your cluster, otherwise you will not be able to download models or any custom data you may want to use.
 
 ## Accessing your cluster
 
@@ -96,7 +96,7 @@ SSH into your assigned cluster as root. It's important to be a root user because
 
 ### Download Ollama
 
-[Ollama](https://ollama.com/download/linux) is our model manager, and will make development using specific models significantly easier, make sure you are running as root, and then execute the following command to download Ollama.
+[Ollama](https://ollama.com/download/linux) is our model manager, and will make development using specific models significantly easier, make sure you are running as root (`root@hpcc-cluster-[C].stanford.edu`), and then execute the following command to download Ollama.
 
 ```
 curl -fsSL https://ollama.com/install.sh | sh
@@ -141,21 +141,23 @@ Next, we need to run our Ollama locally. This will download the 8B model.
 ollama run llama3.1
 ```
 
-You may even want to try the 70B model if your GPU has ~40GB of VRAM because it uses 4 bit quantization (basically reducing VRAM needed to run on a GPU). The P100s on your cluster have 16 GB of VRAM. All Llama 3.1 models were originally quantized with fp16, and if we use 4 bit quantization then we can expect to save ~75% (4/16 = 25% memory footprint) or about 10GB of our P100 card.
+**Note**: You can easily swap out the model you are running here if you'd like a more powerful model. However, we assume you will be using this for the rest of the project. If you wish to use your own model. You'll want to replace all instances of `llama3.1` in the codebase to the model name you'll want to use.
+
+<details>
+  <summary>If you want to experiment with larger models, you'll want to learn a bit about <a href="https://huggingface.co/docs/optimum/en/concept_guides/quantization">quantization</a>!</summary>
+For example You may even want to try the 70B model if your GPU has ~40GB of VRAM because it uses 4 bit quantization (basically reducing VRAM needed to run on a GPU). The P100s on your cluster have 16 GB of VRAM. All Llama 3.1 models were originally quantized with fp16, and if we use 4 bit quantization then we can expect to save ~75% (4/16 = 25% memory footprint) or use about 10GB of our P100 card.
 
 ```
 ollama run llama3.1:70b
 ```
 
-You may notice that Ollama doesn't detect any GPUs, and that's fine. We'll fix that later.
+</details>
 
-After the model is downloaded, you'll get a prompt to start interacting with the model. Go ahead and prompt it!
+You may notice that Ollama doesn't detect any GPUs, and that's fine. We'll fix that later. This is because you are only on a CPU node right now and haven't deployed any GPU nodes.
 
-Whenever you want to exit the chat, you can type `/bye` to end the conversation.
+After the model is downloaded, you'll get a prompt to start interacting with the model. Go ahead and play around with with it. Whenever you want to exit the chat, you can type `/bye` to end the conversation.
 
-Ollama will also be running on `localhost:11434` in the background.
-
-This localhost address is what we'll be using to query our model.
+Ollama will also be running on `localhost:11434` in the background, this is an important detail for later as this is the url we'll use to interact with the model afterwards with our own user interface.
 
 ### Downloading Embedding Model
 
@@ -169,11 +171,7 @@ In order to allow for requests from our other chat interfaces, we'll allow Cross
 
 `export CHROMA_SERVER_CORS_ALLOW_ORIGINS='["http://localhost:3000"]'`
 
-Then we can start our vector databse. Start it in a new terminal with `chroma run --host localhost --port 8000 --path ./chroma`
-
-In order for us to be able to access this vector database locally as well, we'll want to port forward the vector database.
-
-`ssh -L 8000:localhost:8000 student@hpcc-cluster-[C] -t ssh -L 8000:localhost:8000 compute-1-1`
+Then we can start our vector database. Start it in a new terminal with `chroma run --host localhost --port 8000 --path ./chroma`
 
 ## Implementing RAG
 
@@ -185,9 +183,9 @@ You'll want to clone the directory for this project for convenience (TODO: Make 
 
 Change to the `project-5` directory.
 
-You should also install all the requirements for the rest of the project using pip. You can do this by doing `pip install -r requirements.txt`
+You should also install all the requirements for the rest of the project using pip. You can do this by doing `pip install -r requirements.txt`. This will install all the required modules you'll need.
 
-Create a Slurm script to launch Jupyter Notebook on compute-1-1. Make sure you are in the `$HOME/project-5` directory (command to execute is pwd). Name the script `jupyter_submit.slurm`:
+Create a Slurm script to launch Jupyter Notebook on `compute-1-1`. Make sure you are in the `$HOME/project-5` directory (command to execute is pwd). Name the script `jupyter_submit.slurm`:
 
 ```
 #!/bin/bash
@@ -221,9 +219,9 @@ slurm-103.out:[I 18:40:29.846 NotebookApp] http://localhost:8888/?token=c11be5af
 slurm-103.out:        http://localhost:8888/?token=c11be5afa5cddd73548d8ff73786291202a37868d5c18451
 ```
 
-Now you should be able to connect with the cluster and run jobs by following the link. In this case it's `http://localhost:8888/?token=c11be5afa5cddd73548d8ff73786291202a37868d5c18451`.
+Now you should be able to connect with the cluster and run jobs by following the link. In this case it's `http://localhost:8888/?token=c11be5afa5cddd73548d8ff73786291202a37868d5c18451` but it will depend on your output from the command.
 
-From here you can copy the notebook from [here (TODO ADD LINK)]() named `rag.ipynb` and run through the cells.
+From here you can open up the notebook named `rag.ipynb` and run through the cells.
 
 Come back when you finished setting up your RAG pipeline!
 
@@ -245,17 +243,19 @@ We'll also want to port forward the Ollama config to make sure that we are using
 
 `ssh -L 11434:localhost:11434 student@hpcc-cluster-[C] -t ssh -L 11434:localhost:11434 compute-1-1`
 
+Finally, we'll also want to port forward our vector database!
+
+`ssh -L 8000:localhost:8000 student@hpcc-cluster-[C] -t ssh -L 8000:localhost:8000 compute-1-1`
+
 If you navigate to `localhost:3000` on your computer, you'll see the chat interface!
 
-Try playing around with the chat interface. This chat interface is missing a key feature though, it's connected to your backend model but does not actually use any of the data we stored in our vector database!
+Try playing around with the chat interface. This chat interface is connected to your backend model and uses the data we stored in our vector database!
 
-To use our vector database, we have a little bit of work to do. You will see that there's a file called `Rag.tsx`, this file is where you'll be making some small code changes.
-
-We will update the code to connect to our backend vector database, get our embedding data, and augment it to our user generated query.
-
-# TODO finish this explanation
+# System Prompt Engineering
 
 Lastly, one way to tune the model is to try making changes to the system prompt in `Chat.tsx`. You can instruct the model to behave in some way.
+
+This system prompt is a precursor that tells you
 
 ## Look at metrics
 
