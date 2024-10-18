@@ -251,11 +251,9 @@ If you navigate to `localhost:3000` on your computer, you'll see the chat interf
 
 Try playing around with the chat interface. This chat interface is connected to your backend model and uses the data we stored in our vector database!
 
-# System Prompt Engineering
+## System Prompt Engineering
 
-Lastly, one way to tune the model is to try making changes to the system prompt in `Chat.tsx`. You can instruct the model to behave in some way.
-
-This system prompt is a precursor that tells you
+Read through the code in `llm-rag-chat/components/Rag.js`, there's a point at which we augment the user's query and tell the LLM to use the context to answer the question. You can instruct the model to behave in some way by adjusting this prompt, e.g. asking it to be more factual with the context, or do anything you want! For us we may want it to translate or answer questions! Feel free to adjust it to your use case!
 
 ## Look at metrics
 
