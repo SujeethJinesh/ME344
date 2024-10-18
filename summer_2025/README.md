@@ -8,7 +8,7 @@ This project will teach you how to build a Retrieval Augmented Generation (RAG) 
 
 ### What problem does RAG solve?
 
-Standard LLMs do not have access to any outside data when generating responses to users, which is quite problematic when we want to augment our LLM to work with new information (e.g. breaking news).
+Standard LLMs do not have access to any outside data when generating responses to users, which is quite problematic when we want to augment our LLM to work with new information (e.g. breaking news, newly updated weather information).
 
 One possible way to add this data is to continuously finetune our LLM (e.g. [LoRA](https://arxiv.org/abs/2106.09685)), but this is incredibly expensive, difficult, and may require downtime for an application. Often times, it may also not even be necessary as there's still a chance of hallucination.
 
@@ -18,19 +18,59 @@ RAG is designed with this in mind - being fast to add information without downti
 
 Think of a student as an LLM. That student will take an exam--think of the exam questions as a user's queries. The student is also allowed to build a cheatsheet before the exam.
 
-When the student takes the exam (i.e. answers a query), they will look to their cheatsheet, and add in relevant information, potentially citing information.
+When the student takes the exam (i.e. answers a query), they will look to their prewritten cheatsheet, and add in relevant information, potentially citing information.
 
-Consider an example question of "What major event happened today?".
+Consider an example question of "What is the weather like today at Stanford?".
 
-The student can "augment" the question by adding in information from their cheatsheet and transform it into something like "CONTEXT: Stanford researchers announce creation of an Artificial General Intelligence | QUESTION: What major event happened today?". This makes it much easier to answer the question.
+The student can "augment" the question by adding in information from their cheatsheet and transform it into something like "CONTEXT: Stanford weather - 75F high, 55F low. | QUESTION: What's the weather like today at Stanford?". This makes it much easier to answer the question.
 
 The mechanics are slightly different for LLMs, but the concept is the same.
 
-### How does RAG work mechanistically?
+<div style="text-align: center;">
+    <img src="images/exam_student.png" alt="Exam student using cheatsheet" width="300"/>
+</div>
 
-RAG enhances our LLM by passing the user's query to a "vector database", returning potentially relevant information, and then "augmenting" our user's query to cite this relevant information.
+### How do we build an LLM + RAG System?
 
-The vector database is key here, because when our system performs lookups, we are embedding the question in a vector space and looking for similar values near it. These similar values are then used to augment our prompt like the example above: "CONTEXT: Stanford researchers announce creation of an Artificial General Intelligence | QUESTION: What major event happened today?" (note, we can add as many entries as fits within our LLM's context length).
+#### Setting up the Vector Database
+
+1. Gather data. We will use weather data as an example, but our project will involve different data. Here's what that could look like, a table of weather data for selected regions, but it could be any text form data--even the whole Harry Potter book series!
+
+<div style="text-align: center;">
+    <img src="images/1_gather_data.png" alt="Exam student using cheatsheet" width="300"/>
+</div>
+
+2. Chunk and embed the data. This step can be thought of as splitting the data we have into smaller chunks so we can store smaller snippets of data into our database.
+
+We "embed" the data by turning it into a vector that can be easily stored into our database. For technical people, this can be considered complimentary to hashing an object. This is typically done with another ML model that is specifically designed for embeddings!
+
+<div style="text-align: center;">
+    <img src="images/2_chunk_embed_data.png" alt="Exam student using cheatsheet" width="600"/>
+</div>
+
+3. Store the chunked and embedded data into our vector database. We can see that after we store the data in the database, it will be easy for us to look it up!
+
+<div style="text-align: center;">
+    <img src="images/3_store_in_db.png" alt="Exam student using cheatsheet" width="600"/>
+</div>
+
+#### Augmenting the user's query for the model
+
+1. Lookup relevant context for the user's query. Let's assume that the user is asking about the weather at Stanford. We can do this by passing the user's whole query to the embedding model and then to the vector database. This lookup should return us data that is relevant to our user's query by looking for similar data around it. In this case our embedding model would pick things related to "weather" and "Stanford", giving us back the relevant chunk for Stanford's weather.
+
+<div style="text-align: center;">
+    <img src="images/1_lookup_context.png" alt="Exam student using cheatsheet" width="600"/>
+</div>
+
+2. Finally, we can augment our query using any format we'd like and directly pass this off to our LLM! The result will be a far more accurate answer to our question.
+
+<div style="text-align: center;">
+    <img src="images/2_send_augmented_query.png" alt="Exam student using cheatsheet" width="600"/>
+</div>
+
+In summary, RAG enhances our LLM by passing the user's query to the vector database, returning potentially relevant information, and then "augmenting" our user's query to cite this relevant information.
+
+The vector database is key here, because when our system performs lookups, we are embedding the question in a vector space and looking for similar values near it. These similar values are then used to augment our prompt like the example above: "CONTEXT: Stanford - 75F high, 55F low | QUERY : What is the weather like today at Stanford?" (note, we can add as many entries as fits within our LLM's context length).
 
 Our vector database is filled up with files or documents we give it. This is done by first chunking the data (making smaller chunks of the data) and then creating embeddings for it (vector representations) to place it in the database. The database can be updated anytime and independently of the LLM (for our purposes).
 
