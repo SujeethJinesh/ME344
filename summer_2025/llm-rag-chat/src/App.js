@@ -22,21 +22,32 @@ const App = () => {
     setContext(contextData); // Display context in the sidebar
 
     try {
+      // Use environment variables for configuration
+      const ollamaUrl = process.env.REACT_APP_OLLAMA_URL || 'http://localhost:11434';
+      const modelName = process.env.REACT_APP_OLLAMA_MODEL || 'llama3.1';
+
       // Call the LLM API with the augmented query
-      const response = await fetch('http://localhost:11434/api/generate', {
+      const response = await fetch(`${ollamaUrl}/api/generate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-
         body: JSON.stringify({
-          model: 'llama3.1',
+          model: modelName,
           prompt: augmentedQuery,
           stream: false,
         }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
+
+      if (!data.response) {
+        throw new Error('No response received from the model');
+      }
 
       // Update messages with LLM response
       setMessages((prevMessages) => [
@@ -45,9 +56,20 @@ const App = () => {
       ]);
     } catch (error) {
       console.error('Error fetching LLM response:', error);
+      
+      // Provide specific error messages
+      let errorMessage = 'Error fetching response from the model. ';
+      if (error.message.includes('status: 404')) {
+        errorMessage += 'Model not found. Please ensure Ollama is running and the model is available.';
+      } else if (error.message.includes('Failed to fetch')) {
+        errorMessage += 'Cannot connect to Ollama. Please ensure Ollama is running on the correct port.';
+      } else {
+        errorMessage += 'Please check your connection and try again.';
+      }
+      
       setMessages((prevMessages) => [
         ...prevMessages,
-        { text: 'Error fetching response from the model.', isUser: false },
+        { text: errorMessage, isUser: false },
       ]);
     } finally {
       setLoading(false);
