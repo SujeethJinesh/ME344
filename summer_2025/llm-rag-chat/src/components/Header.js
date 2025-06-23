@@ -1,9 +1,9 @@
 import React from 'react';
 import './Header.css';
 
-const Header = () => (
+const Header = ({ isMcp }) => (
   <div className='header'>
-    <h1>LLM + RAG Chat</h1>
+    <h1>{isMcp ? 'Deep Research Mode' : 'LLM + RAG Slang Translator'}</h1>
   </div>
 );
 
