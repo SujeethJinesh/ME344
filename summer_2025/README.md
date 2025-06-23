@@ -1,6 +1,22 @@
-# ME344 Project X - LLM + RAG Slang Translator
+# ME344 Project X - Building your first AI Agent
 
 Author: [Sujeeth Jinesh](https://www.linkedin.com/in/SujeethJinesh/)
+
+## Project Overview
+
+This project teaches you to build two complementary AI systems:
+
+### Part 1 - LLM + RAG Slang Translator
+
+Build a Retrieval Augmented Generation (RAG) chatbot using local data to enhance your Large Language Model responses. Perfect for querying known, static datasets.
+
+### Part 2 - Deep Research Agent with MCP
+
+Build an advanced research system that can search the web, learn from new information, and provide cited answers using LangGraph workflows and the Model Context Protocol (MCP).
+
+---
+
+## Part 1 - LLM + RAG Slang Translator
 
 This project will teach you how to build a Retrieval Augmented Generation (RAG) chatbot. It can be used with text based data to enhance your Large Language Model (LLM). This technique is commonly referred to as LLM + RAG. This tutorial is heavily inspired by content from [pixegami](https://www.youtube.com/watch?v=2TJxpyO3ei4).
 
@@ -82,13 +98,19 @@ In this project, you will build a slang translator using Llama 3.1 and RAG. We w
 
 We encourage you to use any model and data of your choice! [Ollama](https://ollama.com/library) is a great and easy place to try out various models, and [Kaggle](https://www.kaggle.com/datasets) is a great place to look for datasets.
 
-# Getting Started
+---
 
-## Enabling Internet on your GPU cluster
+## 📋 Setup
+
+If you prefer manual setup or encounter issues:
+
+### Prerequisites
+
+#### Enabling Internet on your GPU cluster
 
 Reach out to Professor Jones to enable internet on your cluster, otherwise you will not be able to download models or any custom data you may want to use.
 
-## Accessing your cluster
+#### Accessing your cluster
 
 SSH into your assigned cluster as root. It's important to be a root user because we will need to install Ollama, which requires root access.
 
@@ -225,27 +247,45 @@ From here you can open up the notebook named `rag.ipynb` and run through the cel
 
 Come back when you finished setting up your RAG pipeline!
 
-## Serve locally
+## Testing Your RAG System
 
-Now that we've updated our vector database, we want our model to use that when asked for queries. To do this, we will make a request to our vector database when the user gives us a query, append that information we received from the database, and then send that whole prompt off to the model!
+### Using the Automated Script (Recommended)
+
+```bash
+# Start the complete RAG system
+./run_part1.sh
+
+# Or start just the frontend (if you've already run the notebook)
+./run_part1.sh --frontend-only
+```
+
+The script automatically handles all service startup and provides URLs when ready.
+
+### Manual Testing
+
+If you used the manual setup, now that we've updated our vector database, we want our model to use that when asked for queries. To do this, we will make a request to our vector database when the user gives us a query, append that information we received from the database, and then send that whole prompt off to the model!
 
 We have provided an easy to interact with frontend so we can test out our model.
 
-cd into `chat-gpt-clone`
+cd into `llm-rag-chat`
 
 To start the development server, run `npm install` and then run `npm start` this will create your dev site on `localhost:3000`.
 
-We need to port forward port 3000 to our local 3000, so we can do that by doing the following:
+#### Port Forwarding (Remote Servers)
 
-`ssh -L 3000:localhost:3000 student@hpcc-cluster-[C] -t ssh -L 3000:localhost:3000 compute-1-1`
+If running on a remote server, you'll need to set up port forwarding:
 
-We'll also want to port forward the Ollama config to make sure that we are using the proper backend.
+```bash
+# Single command for all required ports
+ssh -L 3000:localhost:3000 -L 8000:localhost:8000 -L 8888:localhost:8888 -L 11434:localhost:11434 student@hpcc-cluster-[C].stanford.edu
+```
 
-`ssh -L 11434:localhost:11434 student@hpcc-cluster-[C] -t ssh -L 11434:localhost:11434 compute-1-1`
+**Individual port explanations:**
 
-Finally, we'll also want to port forward our vector database!
-
-`ssh -L 8000:localhost:8000 student@hpcc-cluster-[C] -t ssh -L 8000:localhost:8000 compute-1-1`
+- `3000` - React Frontend
+- `8000` - ChromaDB Vector Database
+- `8888` - Jupyter Notebook
+- `11434` - Ollama LLM Server
 
 If you navigate to `localhost:3000` on your computer, you'll see the chat interface!
 
@@ -261,4 +301,118 @@ You'll be able to use `htop` in your cluster to see how demanding the usage is w
 
 We encourage you to try out various different models, parameter sizes, data, and system prompts to see how this effects the GPU usage, accuracy, speed, etc!
 
-We're excited to see how you choose to adapt this code!
+## Part 2 - Creating a Deep Research with LangGraph
+
+In Part 1, we built a Slang Translator using a local RAG pipeline. This is powerful for querying a known, static dataset. But what if we want our application to answer questions about topics it has never seen before, using the most current information from the internet?
+
+For this, we will upgrade our application to include a Deep Research Mode, similar to [OpenAI](https://openai.com/index/introducing-deep-research/) or [Gemini](https://gemini.google/overview/deep-research/?hl=en). This mode uses an agentic workflow -- instead of a single lookup, the LLM will follow a multi-step process to actively research topics, learn from what it finds, and provide cited answers.
+
+### What is the Model Context Protocol (MCP)?
+
+MCP is an open standard developed by Anthropic to standardize how AI models connect with external tools and data sources. This means that the LLM only needs to talk through one standard API rather than developing custom APIs like how we did for our RAG implementation.
+
+<div style="text-align: center;">
+    <img src="images/mcp.png" alt="MCP comparison" width="500"/>
+</div>
+Source: https://www.descope.com/learn/post/mcp
+
+### How we will use MCP
+
+The core principle of MCP is to decouple the agent's reasoning from the tools it uses. To do this, we will run two separate backend services:
+
+1. The Orchestrator Agent (deep_research_agent): This is our LangGraph agent. It manages the high-level research plan and acts as the MCP Client.
+
+2. The MCP Tool Server (mcp_server): This is a new service. Its only job is to host the Tavily web search tool and expose it over the network. It acts as the MCP Server.
+
+This client-server model is how modern, scalable AI applications are built.
+
+<div style="text-align: center;">
+    <img src="images/deep_research_mcp_agent.png" alt="MCP comparison" width="500"/>
+</div>
+
+### Getting Started (Skip if done in Part 1)
+
+Make sure your python environment is activated from Part 1.
+
+```
+source python-venv/bin/activate
+```
+
+Make sure you've installed the requirements.txt
+
+```
+pip install -r requirements.txt
+```
+
+### Get a Free Web Search API Key
+
+Our agent needs a tool to search the internet. We will use the Tavily API, which is designed for AI agents and offers a generous free tier.
+
+1. Go to https://app.tavily.com/home and sign up for a free account.
+
+<div style="text-align: center;">
+    <img src="images/tavily_home_page.png" alt="Tavily Home Page" width="500"/>
+</div>
+
+2. After signing up, navigate to your dashboard and copy your API Key.
+
+<div style="text-align: center;">
+    <img src="images/tavily_api.png" alt="Tavily API Page" width="500"/>
+</div>
+
+3. We need to make this key available to our application. The best way is to set it as an environment variable. Add the following line to your ~/.bashrc file. This ensures the key is loaded every time you log in.
+
+```
+# This command appends the export line to your .bashrc file
+echo "export TAVILY_API_KEY='YOUR_KEY_HERE'" >> ~/.bashrc
+```
+
+4. Now, load the updated .bashrc file into your current terminal session so the key becomes active immediately.
+
+```
+# Load the new variable into your current session
+source ~/.bashrc
+```
+
+### Running the Deep Research Agent
+
+#### Using the Automated Script (Recommended)
+
+```bash
+# First, set up your Tavily API key
+export TAVILY_API_KEY='your_api_key_here'
+
+# Make script executable and run
+chmod +x run_part2.sh
+./run_part2.sh
+```
+
+The script will:
+
+- ✅ Validate all requirements and dependencies
+- 🚀 Start all services in the correct order
+- 🔗 Provide service URLs and next steps
+- ⚠️ Show clear error messages if anything fails
+
+#### Port Forwarding (Remote Servers)
+
+If running on a remote server, use this single command for all required ports:
+
+```bash
+# Replace [C] with your cluster number
+ssh -L 3000:localhost:3000 -L 8000:localhost:8000 -L 8001:localhost:8001 -L 8002:localhost:8002 -L 11434:localhost:11434 student@hpcc-cluster-[C].stanford.edu
+```
+
+**Service Port Reference:**
+
+- `3000` - React Frontend (Main Interface)
+- `8000` - ChromaDB (Vector Database)
+- `8001` - Deep Research Agent (LangGraph Orchestrator)
+- `8002` - MCP Server (Web Search Tools)
+- `11434` - Ollama (LLM Server)
+
+### Want to take it a step further?
+
+Now that you're familiar with how RAG, LangGraph, and MCP work you can build your own interesting workflows for your own use cases! There are many problems in the world that could just use a bit of workflow automation and tool calling. Now you have the power to build it!
+
+We'd love to see what creative solutions you create, and what unique problems you solve!
