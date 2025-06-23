@@ -14,5 +14,12 @@
 
 .chatbox {
   flex-grow: 1;
-  margin-right: 300px; /* Width of the sidebar */
+  margin-right: 400px; /* Updated width to match enhanced sidebar */
+}
+
+/* Responsive adjustments for enhanced UI */
+@media (max-width: 768px) {
+  .chatbox {
+    margin-right: 0;
+  }
 }

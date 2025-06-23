@@ -17,7 +17,7 @@ readonly CYAN='\033[0;36m'
 readonly NC='\033[0m' # No Color
 
 # Service PIDs for cleanup
-declare -g MCP_PID AGENT_PID CHROMA_PID OLLAMA_PID NPM_PID
+declare MCP_PID AGENT_PID CHROMA_PID OLLAMA_PID NPM_PID
 
 # ===================================================================
 # UTILITY FUNCTIONS
@@ -117,7 +117,7 @@ check_python_environment() {
 check_python_dependencies() {
     log_step "Checking Python dependencies..."
     
-    local required_packages=("fastapi" "uvicorn" "langchain" "chromadb" "httpx" "tavily-python")
+    local required_packages=("fastapi" "uvicorn" "langchain" "chromadb" "httpx" "tavily")
     local missing_packages=()
     
     for package in "${required_packages[@]}"; do
@@ -147,7 +147,14 @@ check_environment_variables() {
     fi
     
     # Set default environment variables if not set
-    export CHROMA_SERVER_CORS_ALLOW_ORIGINS='["http://localhost:3000"]'
+    # Set flexible CORS configuration
+    export FRONTEND_PORT="${FRONTEND_PORT:-3000}"
+    local cors_origins="${CHROMA_SERVER_CORS_ALLOW_ORIGINS:-[\"http://localhost:${FRONTEND_PORT}\"]}"
+    
+    export CHROMA_SERVER_CORS_ALLOW_ORIGINS="${cors_origins}"
+    
+    log_info "CORS configuration: ${cors_origins}"
+    log_info "Frontend will run on port: ${FRONTEND_PORT}"
     export REACT_APP_CHROMA_URL="${REACT_APP_CHROMA_URL:-http://localhost:8000}"
     export REACT_APP_OLLAMA_URL="${REACT_APP_OLLAMA_URL:-http://localhost:11434}"
     export REACT_APP_RESEARCH_URL="${REACT_APP_RESEARCH_URL:-http://localhost:8001/research}"
@@ -225,7 +232,7 @@ check_node_dependencies() {
 check_port_availability() {
     log_step "Checking port availability..."
     
-    local ports=(3000 8000 8001 8002 11434)
+    local ports=(${FRONTEND_PORT} 8000 8001 8002 11434)
     local busy_ports=()
     
     for port in "${ports[@]}"; do
@@ -243,7 +250,7 @@ check_port_availability() {
     if [[ ${#busy_ports[@]} -gt 0 ]]; then
         log_warning "Ports already in use: ${busy_ports[*]}"
         log_info "These ports are required:"
-        log_info "  3000 - React Frontend"
+        log_info "  ${FRONTEND_PORT} - React Frontend"
         log_info "  8000 - ChromaDB"
         log_info "  8001 - Deep Research Agent"
         log_info "  8002 - MCP Server"
@@ -397,8 +404,8 @@ main() {
         "11434" "OLLAMA_PID" 5
     
     start_service "React Frontend" \
-        "(cd ./llm-rag-chat && npm start)" \
-        "3000" "NPM_PID" 3
+        "(cd ./llm-rag-chat && PORT=${FRONTEND_PORT} npm start)" \
+        "${FRONTEND_PORT}" "NPM_PID" 3
     
     echo ""
     print_separator
@@ -408,7 +415,7 @@ main() {
     
     # Display service information
     echo -e "${CYAN}📋 Service URLs:${NC}"
-    echo -e "  ${GREEN}React Frontend:${NC}     http://localhost:3000"
+    echo -e "  ${GREEN}React Frontend:${NC}     http://localhost:${FRONTEND_PORT}"
     echo -e "  ${GREEN}ChromaDB:${NC}          http://localhost:8000"
     echo -e "  ${GREEN}Research Agent:${NC}    http://localhost:8001"
     echo -e "  ${GREEN}MCP Server:${NC}        http://localhost:8002"
@@ -422,7 +429,7 @@ main() {
     echo ""
     
     echo -e "${YELLOW}📝 Next Steps:${NC}"
-    echo -e "  1. Open ${GREEN}http://localhost:3000${NC} in your browser"
+    echo -e "  1. Open ${GREEN}http://localhost:${FRONTEND_PORT}${NC} in your browser"
     echo -e "  2. If running on remote server, set up port forwarding"
     echo -e "  3. Press ${RED}Ctrl+C${NC} in this terminal to stop all services"
     echo ""

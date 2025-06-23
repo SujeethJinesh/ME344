@@ -48,7 +48,7 @@ REQUIRED_PYTHON_PACKAGES = [
     ("chromadb", "ChromaDB vector database"),
     ("httpx", "HTTP client"),
     ("langgraph", "LangGraph workflow orchestration"),
-    ("tavily-python", "Tavily search API")
+    ("tavily", "Tavily search API")
 ]
 
 REQUIRED_DIRECTORIES = [

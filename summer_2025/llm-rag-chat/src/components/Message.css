@@ -15,3 +15,29 @@
   background-color: #474787;
   align-self: flex-start;
 }
+
+/* Streaming indicator styles */
+.message.streaming {
+  background-color: #5a5a8a; /* Slightly different shade for streaming */
+}
+
+.streaming-indicator {
+  display: inline-block;
+  margin-left: 2px;
+}
+
+.cursor {
+  display: inline-block;
+  animation: blink 1s infinite;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}

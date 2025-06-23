@@ -274,13 +274,14 @@ def main() -> None:
     
     # Start the server
     try:
-        logger.info(f"🌐 Starting MCP server on port {DEFAULT_PORT}...")
-        print(f"🎉 MCP Server ready at http://localhost:{DEFAULT_PORT}")
+        logger.info(f"🌐 Starting MCP server...")
+        print(f"🎉 MCP Server ready")
         print("📡 Available tools: web_search")
         print("🛑 Press Ctrl+C to stop the server")
         print("=" * 70)
         
-        mcp.run(transport="http_sse", port=DEFAULT_PORT)
+        # Use SSE transport which works with HTTP
+        mcp.run(transport="sse")
         
     except KeyboardInterrupt:
         logger.info("🛑 Server shutdown requested by user")

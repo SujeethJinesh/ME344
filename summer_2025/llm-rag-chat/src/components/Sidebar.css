@@ -2,10 +2,407 @@
   position: absolute;
   right: 0;
   top: 70px; /* Adjust based on header height */
-  width: 300px;
+  width: 400px; /* Increased width for better visibility */
   height: calc(100% - 70px);
   background-color: #2c2c54;
   color: #ffffff;
-  padding: 10px;
+  padding: 15px;
   overflow-y: auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  scroll-behavior: smooth;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  border-bottom: 2px solid #40407a;
+  padding-bottom: 8px;
+}
+
+.sidebar h3 {
+  margin: 15px 0 10px 0;
+  font-size: 1.1em;
+  color: #ddd;
+}
+
+/* Research Log Section */
+.research-section {
+  margin-bottom: 20px;
+}
+
+.log-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.research-log-item {
+  background-color: #40407a;
+  margin-bottom: 5px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border-left: 3px solid #706fd3;
+}
+
+/* Context Section */
+.context-section {
+  margin-bottom: 20px;
+}
+
+.context-content {
+  background-color: #40407a;
+  border-radius: 6px;
+  padding: 12px;
+  border-left: 4px solid #34ace0;
+}
+
+.context-text {
+  margin: 0;
+  font-size: 0.9em;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.context-placeholder {
+  margin: 0;
+  font-style: italic;
+  color: #bbb;
+  font-size: 0.9em;
+}
+
+/* Process Steps Section */
+.process-section {
+  margin-bottom: 15px;
+}
+
+.process-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.process-step {
+  background-color: #40407a;
+  border-radius: 6px;
+  padding: 10px;
+  border-left: 4px solid #706fd3;
+  transition: all 0.2s ease;
+}
+
+.process-step:hover {
+  background-color: #474787;
+}
+
+.step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.step-icon {
+  font-size: 1.1em;
+  margin-right: 8px;
+}
+
+.step-time {
+  font-size: 0.75em;
+  color: #bbb;
+  font-family: 'Courier New', monospace;
+}
+
+.step-message {
+  font-size: 0.85em;
+  line-height: 1.3;
+  word-wrap: break-word;
+}
+
+/* Step Type Styling */
+.step-success {
+  border-left-color: #2ed573;
+  background-color: rgba(46, 213, 115, 0.1);
+}
+
+.step-error {
+  border-left-color: #ff4757;
+  background-color: rgba(255, 71, 87, 0.1);
+}
+
+.step-warning {
+  border-left-color: #ffa502;
+  background-color: rgba(255, 165, 2, 0.1);
+}
+
+.step-config {
+  border-left-color: #3742fa;
+  background-color: rgba(55, 66, 250, 0.1);
+}
+
+.step-timing {
+  border-left-color: #ff6348;
+  background-color: rgba(255, 99, 72, 0.1);
+}
+
+.step-metrics {
+  border-left-color: #2f3542;
+  background-color: rgba(47, 53, 66, 0.2);
+}
+
+.step-help {
+  border-left-color: #ffd32a;
+  background-color: rgba(255, 211, 42, 0.1);
+}
+
+.step-info {
+  border-left-color: #706fd3;
+  background-color: rgba(112, 111, 211, 0.1);
+}
+
+/* Progress Section */
+.progress-section {
+  margin-bottom: 20px;
+}
+
+.progress-bar-container {
+  margin-top: 10px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #40407a;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2ed573, #3742fa);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.progress-text {
+  font-size: 0.8em;
+  color: #ddd;
+  text-align: center;
+}
+
+/* Phase Section */
+.phase-section {
+  margin-bottom: 20px;
+}
+
+.current-phase {
+  background-color: #40407a;
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 4px solid #3742fa;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1em;
+}
+
+/* Research Stats */
+.research-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background-color: #40407a;
+  padding: 12px;
+  border-radius: 6px;
+  border-left: 4px solid #34ace0;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9em;
+}
+
+.stat-label {
+  color: #ddd;
+}
+
+.stat-value {
+  color: #2ed573;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+}
+
+/* Context Meta */
+.context-meta {
+  font-size: 0.8em;
+  color: #bbb;
+  margin-bottom: 8px;
+  padding: 8px;
+  background-color: rgba(112, 111, 211, 0.1);
+  border-radius: 4px;
+}
+
+.context-details {
+  margin-top: 10px;
+}
+
+.context-details summary {
+  cursor: pointer;
+  color: #706fd3;
+  font-size: 0.85em;
+  padding: 4px 0;
+}
+
+.context-details summary:hover {
+  color: #3742fa;
+}
+
+.context-text-full {
+  margin: 8px 0 0 0;
+  font-size: 0.8em;
+  line-height: 1.3;
+  word-wrap: break-word;
+  max-height: 200px;
+  overflow-y: auto;
+  padding: 8px;
+  background-color: rgba(64, 64, 122, 0.3);
+  border-radius: 4px;
+}
+
+/* Process Controls */
+.process-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.process-count {
+  font-size: 0.8em;
+  color: #bbb;
+  font-style: italic;
+}
+
+/* Enhanced Step Styling */
+.step-details {
+  margin-top: 6px;
+  padding: 4px 8px;
+  background-color: rgba(112, 111, 211, 0.2);
+  border-radius: 3px;
+  font-size: 0.75em;
+}
+
+.error-details {
+  background-color: rgba(255, 71, 87, 0.2);
+  border-left: 2px solid #ff4757;
+}
+
+/* Log More */
+.log-more {
+  background-color: rgba(112, 111, 211, 0.3) !important;
+  border-left-color: #706fd3 !important;
+  font-style: italic;
+  color: #bbb;
+  text-align: center;
+}
+
+/* New step types */
+.step-database {
+  border-left-color: #ff6348;
+  background-color: rgba(255, 99, 72, 0.1);
+}
+
+.step-embedding {
+  border-left-color: #5f27cd;
+  background-color: rgba(95, 39, 205, 0.1);
+}
+
+.step-vector {
+  border-left-color: #00d2d3;
+  background-color: rgba(0, 210, 211, 0.1);
+}
+
+.step-similarity {
+  border-left-color: #ff9ff3;
+  background-color: rgba(255, 159, 243, 0.1);
+}
+
+.step-chunking {
+  border-left-color: #54a0ff;
+  background-color: rgba(84, 160, 255, 0.1);
+}
+
+.step-retrieval {
+  border-left-color: #5f27cd;
+  background-color: rgba(95, 39, 205, 0.1);
+}
+
+.step-llm {
+  border-left-color: #ff3838;
+  background-color: rgba(255, 56, 56, 0.1);
+}
+
+.step-generation {
+  border-left-color: #ff4757;
+  background-color: rgba(255, 71, 87, 0.1);
+}
+
+.step-streaming {
+  border-left-color: #3d9cff;
+  background-color: rgba(61, 156, 255, 0.1);
+}
+
+.step-planning {
+  border-left-color: #a55eea;
+  background-color: rgba(165, 94, 234, 0.1);
+}
+
+.step-processing {
+  border-left-color: #26de81;
+  background-color: rgba(38, 222, 129, 0.1);
+}
+
+.step-synthesis {
+  border-left-color: #fc5c65;
+  background-color: rgba(252, 92, 101, 0.1);
+}
+
+.step-web {
+  border-left-color: #45aaf2;
+  background-color: rgba(69, 170, 242, 0.1);
+}
+
+.step-analysis {
+  border-left-color: #fd79a8;
+  background-color: rgba(253, 121, 168, 0.1);
+}
+
+.step-tool {
+  border-left-color: #fdcb6e;
+  background-color: rgba(253, 203, 110, 0.1);
+}
+
+.step-workflow {
+  border-left-color: #6c5ce7;
+  background-color: rgba(108, 92, 231, 0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    position: relative;
+    height: auto;
+    top: 0;
+  }
+  
+  .research-stats {
+    flex-direction: column;
+  }
+  
+  .stat-item {
+    font-size: 0.85em;
+  }
 }
