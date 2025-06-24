@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test ChromaDB Frontend</title>
+</head>
+<body>
+    <h1>ChromaDB Frontend Test</h1>
+    <button id="testBtn">Test ChromaDB Connection</button>
+    <div id="results"></div>
+
+    <script type="module">
+        import { ChromaClient } from 'https://unpkg.com/chromadb@1.9.2/dist/chromadb.es.js';
+        
+        document.getElementById('testBtn').addEventListener('click', async () => {
+            const results = document.getElementById('results');
+            results.innerHTML = 'Testing...';
+            
+            try {
+                console.log('Creating ChromaDB client...');
+                const client = new ChromaClient({
+                    path: 'http://localhost:8000'
+                });
+                
+                console.log('Testing heartbeat...');
+                await client.heartbeat();
+                results.innerHTML += '<p>✅ ChromaDB connection successful</p>';
+                
+                console.log('Listing collections...');
+                const collections = await client.listCollections();
+                results.innerHTML += `<p>📚 Found ${collections.length} collections</p>`;
+                
+                if (collections.length > 0) {
+                    console.log('Getting collection...');
+                    const collection = await client.getCollection({
+                        name: 'llm_rag_collection'
+                    });
+                    results.innerHTML += '<p>✅ Collection retrieved</p>';
+                    
+                    // Test a simple query (without embeddings first)
+                    console.log('Testing query...');
+                    const queryResults = await collection.query({
+                        queryTexts: ['test'],
+                        nResults: 1
+                    });
+                    results.innerHTML += '<p>✅ Query successful</p>';
+                    results.innerHTML += `<p>📄 Found ${queryResults.documents[0].length} documents</p>`;
+                }
+                
+            } catch (error) {
+                console.error('Test failed:', error);
+                results.innerHTML += `<p>❌ Error: ${error.message}</p>`;
+                results.innerHTML += `<pre>${error.stack}</pre>`;
+            }
+        });
+    </script>
+</body>
+</html>

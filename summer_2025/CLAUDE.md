@@ -11,24 +11,28 @@ This is an ME344 educational project that implements a Retrieval Augmented Gener
 ### Core Components
 
 - **Python RAG Pipeline** (`rag.ipynb`): Jupyter notebook containing the complete RAG implementation
+
   - Data loading and chunking using LangChain
   - ChromaDB vector database integration
   - Ollama embedding functions with `nomic-embed-text` model
   - Document processing for 600k+ slang definitions
 
 - **React Frontend** (`llm-rag-chat/`): Web interface for chat interaction
+
   - RAG component (`src/components/Rag.js`) handles query augmentation
   - Connects to ChromaDB (port 8000) and Ollama (port 11434)
   - Real-time embedding and context retrieval
   - Component structure: Header, Sidebar, ChatBox, InputBar, Message, Controls
 
 - **Deep Research Agent** (`deep_research_agent/main.py`): Advanced research system
+
   - LangGraph-based multi-node workflow
   - FastAPI server (port 8001) with streaming responses
   - Multi-step research process: planning → search → processing → synthesis
   - Integrates with MCP server for web search capabilities
 
 - **MCP Server** (`mcp_server/main.py`): Web search tool server
+
   - Tavily API integration for web search
   - FastMCP server (port 8002) providing search tools
   - JSON-RPC protocol for tool communication
@@ -41,11 +45,13 @@ This is an ME344 educational project that implements a Retrieval Augmented Gener
 ### System Architecture Flow
 
 #### Basic RAG System:
+
 1. **Data Pipeline**: CSV → LangChain loader → chunking → embedding → ChromaDB
 2. **Query Processing**: User query → embedding → similarity search → context augmentation → LLM
 3. **Response Generation**: Augmented query sent to Ollama LLM → response to frontend
 
 #### Deep Research Agent Flow:
+
 1. **Planning**: Query analysis and search strategy generation
 2. **Web Search**: MCP client calls Tavily API via MCP server
 3. **Processing**: Content chunking and embedding
@@ -56,6 +62,7 @@ This is an ME344 educational project that implements a Retrieval Augmented Gener
 ## Development Commands
 
 ### Automated Startup (Recommended)
+
 ```bash
 # Start all services (Part 2 - Deep Research Agent)
 ./run_part2.sh
@@ -65,9 +72,10 @@ This is an ME344 educational project that implements a Retrieval Augmented Gener
 ### Manual Service Management
 
 #### Python Environment
+
 ```bash
 # Activate virtual environment (required)
-source ~/codes/python/python-venv/bin/activate
+source ~/codes/python/.venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -78,6 +86,7 @@ chroma run --host localhost --port 8000 --path ./chroma
 ```
 
 #### MCP Server (Web Search)
+
 ```bash
 # Requires TAVILY_API_KEY environment variable
 export TAVILY_API_KEY="your_api_key"
@@ -86,12 +95,14 @@ python main.py  # Starts on port 8002
 ```
 
 #### Deep Research Agent
+
 ```bash
 cd deep_research_agent
 uvicorn main:app --reload --port 8001
 ```
 
 #### Ollama Model Management
+
 ```bash
 # Start Ollama server
 ollama serve
@@ -104,6 +115,7 @@ ollama pull nomic-embed-text
 ```
 
 #### React Frontend
+
 ```bash
 cd llm-rag-chat
 npm install
@@ -111,6 +123,7 @@ npm start  # Starts on localhost:3000
 ```
 
 #### Jupyter Notebook
+
 ```bash
 # Launch notebook server
 jupyter-notebook --no-browser --notebook-dir=$PWD
@@ -119,18 +132,21 @@ jupyter-notebook --no-browser --notebook-dir=$PWD
 ## Key Configuration
 
 ### Service Ports
+
 - **React Dev Server**: `http://localhost:3000`
-- **ChromaDB**: `http://localhost:8000` 
+- **ChromaDB**: `http://localhost:8000`
 - **Deep Research Agent**: `http://localhost:8001`
 - **MCP Server**: `http://localhost:8002`
 - **Ollama API**: `http://localhost:11434`
 
 ### Models and Collections
+
 - **Embedding Model**: `nomic-embed-text`
 - **LLM Model**: `llama3.1`
 - **ChromaDB Collection**: `llm_rag_collection`
 
 ### Environment Variables
+
 - `TAVILY_API_KEY`: Required for MCP web search functionality
 - `REACT_APP_CHROMA_URL`: ChromaDB URL (default: http://localhost:8000)
 - `REACT_APP_OLLAMA_URL`: Ollama API URL (default: http://localhost:11434)
@@ -139,6 +155,7 @@ jupyter-notebook --no-browser --notebook-dir=$PWD
 ## Data Processing
 
 The system processes Urban Dictionary slang data:
+
 - Source: `data/cleaned_slang_data.csv` (628,985 entries)
 - Format: word/definition pairs
 - Chunking: RecursiveCharacterTextSplitter with 800/80 char settings
@@ -158,6 +175,7 @@ The system processes Urban Dictionary slang data:
 ## Dependencies
 
 ### Python (requirements.txt)
+
 - LangChain ecosystem (langchain, langchain-community, langchain-text-splitters)
 - LangGraph for workflow orchestration
 - FastAPI for web service
@@ -167,11 +185,13 @@ The system processes Urban Dictionary slang data:
 - HTTPx for HTTP client operations
 
 ### React (package.json)
+
 - React 18.3.1
 - ChromaDB JavaScript client
 - Workbox for service worker functionality
 
 ## Current Architecture Status
+
 - **Basic RAG**: Fully functional with Jupyter notebook pipeline
 - **React Frontend**: Complete with error handling and environment configuration
 - **Deep Research Agent**: Functional but startup script has path error

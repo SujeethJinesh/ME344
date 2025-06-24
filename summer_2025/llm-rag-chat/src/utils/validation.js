@@ -9,7 +9,7 @@
 
 export const CONFIG = {
   MAX_QUERY_LENGTH: 1000,
-  MIN_QUERY_LENGTH: 3,
+  MIN_QUERY_LENGTH: 1, // More permissive - allow single character queries
   REQUEST_TIMEOUT: 30000, // 30 seconds
   SSE_TIMEOUT: 60000, // 60 seconds
   REQUIRED_SERVICES: {
@@ -50,7 +50,7 @@ export const validateQuery = (query) => {
   if (trimmedQuery.length < CONFIG.MIN_QUERY_LENGTH) {
     return {
       isValid: false,
-      error: `Query too short (minimum ${CONFIG.MIN_QUERY_LENGTH} characters)`,
+      error: `Query too short (minimum ${CONFIG.MIN_QUERY_LENGTH} character)`,
       suggestion: 'Please provide more specific details in your query'
     };
   }
@@ -63,19 +63,18 @@ export const validateQuery = (query) => {
     };
   }
 
-  // Check for potentially problematic characters
-  const suspiciousPatterns = [
-    /[<>\"']/g,  // HTML/script injection
+  // Check for only the most dangerous patterns
+  const dangerousPatterns = [
     /javascript:/gi, // JavaScript URLs
-    /data:/gi // Data URLs
+    /data:text\/html/gi // HTML data URLs
   ];
 
-  for (const pattern of suspiciousPatterns) {
+  for (const pattern of dangerousPatterns) {
     if (pattern.test(trimmedQuery)) {
       return {
         isValid: false,
-        error: 'Query contains invalid characters',
-        suggestion: 'Please use only letters, numbers, and basic punctuation'
+        error: 'Query contains invalid content',
+        suggestion: 'Please enter a regular question or search term'
       };
     }
   }
@@ -368,7 +367,7 @@ export const retryWithBackoff = async (fn, maxRetries = 3, baseDelay = 1000) => 
 // ===================================================================
 
 class RateLimiter {
-  constructor(maxRequests = 5, windowMs = 60000) {
+  constructor(maxRequests = 20, windowMs = 60000) { // Much more permissive
     this.maxRequests = maxRequests;
     this.windowMs = windowMs;
     this.requests = [];
@@ -404,7 +403,7 @@ export const rateLimiter = new RateLimiter();
 // EXPORT ALL UTILITIES
 // ===================================================================
 
-export default {
+const validationUtils = {
   CONFIG,
   validateQuery,
   validateEnvironment,
@@ -414,3 +413,5 @@ export default {
   retryWithBackoff,
   rateLimiter
 };
+
+export default validationUtils;

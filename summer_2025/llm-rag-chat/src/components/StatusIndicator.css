@@ -5,10 +5,12 @@
   background-color: #40407a;
   border-radius: 8px;
   padding: 10px 15px;
-  margin: 10px 0;
+  margin: 8px 16px;
   border-left: 4px solid #706fd3;
   transition: all 0.3s ease;
   min-height: 50px;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
 }
 
 .status-ready {
@@ -96,6 +98,8 @@
     padding: 8px 12px;
     gap: 8px;
     min-height: 40px;
+    margin: 8px 12px;
+    max-width: calc(100vw - 24px);
   }
   
   .status-icon-container {
@@ -113,5 +117,9 @@
   
   .status-message {
     font-size: 0.7em;
+  }
+  
+  .status-detail {
+    font-size: 0.6em;
   }
 }

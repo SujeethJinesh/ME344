@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { ChromaClient, OllamaEmbeddingFunction } from 'chromadb';
+import { ChromaClient } from 'chromadb';
 
 const Rag = ({ query, onAugmentedQuery, onProcessStep }) => {
   const fetchAugmentedQuery = async () => {
@@ -40,15 +40,39 @@ const Rag = ({ query, onAugmentedQuery, onProcessStep }) => {
       const collections = await client.listCollections();
       onProcessStep && onProcessStep(`📋 Found ${collections.length} collection(s): ${collections.map(c => c.name).join(', ')}`, "success");
 
-      // Step 4: Embedding Function Setup
-      onProcessStep && onProcessStep("🧮 EMBEDDING PHASE: Setting up embedding function...", "embedding");
-      onProcessStep && onProcessStep("📚 Educational Note: Embeddings convert text to numerical vectors", "info");
-      const embedder = new OllamaEmbeddingFunction({
-        url: `${ollamaUrl}/api/embeddings`,
-        model: embeddingModel,
-      });
-      onProcessStep && onProcessStep("✅ Embedding function configured with nomic-embed-text", "success");
-      onProcessStep && onProcessStep("📚 Educational Note: This model creates 768-dimensional vectors", "info");
+      // Step 4: Create Ollama Embedding Function
+      onProcessStep && onProcessStep("🧮 EMBEDDING PHASE: Creating Ollama embedding function...", "embedding");
+      onProcessStep && onProcessStep("📚 Educational Note: Using same embedding model as in notebook", "info");
+      
+      // Custom Ollama embedding function
+      const ollamaEmbedder = {
+        generate: async (texts) => {
+          const embeddings = [];
+          for (const text of texts) {
+            try {
+              const response = await fetch(`${ollamaUrl}/api/embeddings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  model: embeddingModel,
+                  prompt: text
+                })
+              });
+              
+              if (!response.ok) {
+                throw new Error(`Ollama embedding failed: ${response.statusText}`);
+              }
+              
+              const data = await response.json();
+              embeddings.push(data.embedding);
+            } catch (embError) {
+              console.error('Embedding error:', embError);
+              throw embError;
+            }
+          }
+          return embeddings;
+        }
+      };
 
       // Step 5: Collection Retrieval
       onProcessStep && onProcessStep("🎯 Accessing 'llm_rag_collection'...", "info");
@@ -56,9 +80,9 @@ const Rag = ({ query, onAugmentedQuery, onProcessStep }) => {
       try {
         collection = await client.getCollection({
           name: 'llm_rag_collection',
-          embeddingFunction: embedder,
+          embeddingFunction: ollamaEmbedder
         });
-        onProcessStep && onProcessStep("✅ Collection loaded successfully", "success");
+        onProcessStep && onProcessStep("✅ Collection loaded with Ollama embedding", "success");
       } catch (collectionError) {
         onProcessStep && onProcessStep("❌ Collection 'llm_rag_collection' not found", "error");
         throw new Error(`Collection 'llm_rag_collection' not found. Please run the RAG notebook first to create the collection.`);
@@ -67,8 +91,8 @@ const Rag = ({ query, onAugmentedQuery, onProcessStep }) => {
       // Step 6: Query Embedding and Search
       onProcessStep && onProcessStep(`🔍 SEARCH PHASE: Searching for relevant documents...`, "search");
       onProcessStep && onProcessStep(`📝 Query: "${query}"`, "query");
-      onProcessStep && onProcessStep("⚡ Converting query to vector embedding...", "vector");
-      onProcessStep && onProcessStep("📚 Educational Note: Query embedding enables semantic similarity search", "info");
+      onProcessStep && onProcessStep("⚡ Using direct text search...", "vector");
+      onProcessStep && onProcessStep("📚 Educational Note: ChromaDB handles embedding automatically", "info");
       
       const queryPromise = collection.query({
         queryTexts: [query],
@@ -132,18 +156,20 @@ const Rag = ({ query, onAugmentedQuery, onProcessStep }) => {
       
       // Provide specific error messages
       let errorMessage = 'Error querying the knowledge base. ';
-      if (error.message.includes('ChromaDB')) {
+      const errorString = error?.message || error?.toString() || 'Unknown error';
+      
+      if (errorString.includes('ChromaDB')) {
         errorMessage += 'Please ensure ChromaDB is running.';
         onProcessStep && onProcessStep("💡 Solution: Start ChromaDB with 'chroma run --host localhost --port 8000'", "help");
-      } else if (error.message.includes('Collection')) {
+      } else if (errorString.includes('Collection')) {
         errorMessage += 'Please run the RAG setup notebook first.';
         onProcessStep && onProcessStep("💡 Solution: Run rag.ipynb notebook to create the vector database", "help");
-      } else if (error.message.includes('timeout')) {
+      } else if (errorString.includes('timeout')) {
         errorMessage += 'The query took too long to process.';
         onProcessStep && onProcessStep("💡 Solution: Try a shorter query or check your network connection", "help");
       } else {
         errorMessage += 'Please check your connection and try again.';
-        onProcessStep && onProcessStep(`💡 Error details: ${error.message}`, "help");
+        onProcessStep && onProcessStep(`💡 Error details: ${errorString}`, "help");
       }
       
       onProcessStep && onProcessStep(`❌ ${errorMessage}`, "error");

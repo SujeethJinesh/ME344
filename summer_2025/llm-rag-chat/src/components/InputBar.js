@@ -34,6 +34,9 @@ const InputBar = ({ onSend, loading }) => {
 
   const handleSend = useCallback((e) => {
     e.preventDefault();
+    console.log('🔥 InputBar handleSend called with input:', input);
+    console.log('🔥 InputBar onSend function:', typeof onSend);
+    console.log('🔥 InputBar loading state:', loading);
     
     // Clear previous errors
     setValidationError(null);
@@ -41,7 +44,9 @@ const InputBar = ({ onSend, loading }) => {
 
     // Validate input
     const validation = validateQuery(input);
+    console.log('📝 Validation result:', validation);
     if (!validation.isValid) {
+      console.log('❌ Validation failed:', validation.error);
       setValidationError({
         message: validation.error,
         suggestion: validation.suggestion
@@ -52,6 +57,7 @@ const InputBar = ({ onSend, loading }) => {
     // Check rate limiting
     if (!rateLimiter.canMakeRequest()) {
       const waitTime = Math.ceil(rateLimiter.getTimeUntilNextRequest() / 1000);
+      console.log('⏱️ Rate limited, wait time:', waitTime);
       setRateLimitWarning({
         message: `Please wait ${waitTime} seconds before sending another message`,
         suggestion: 'This helps prevent overwhelming the system'
@@ -61,6 +67,7 @@ const InputBar = ({ onSend, loading }) => {
 
     // Don't send if already loading
     if (loading) {
+      console.log('⏳ Already loading, blocking send');
       setValidationError({
         message: 'Please wait for the current request to complete',
         suggestion: 'You can only send one message at a time'
@@ -70,11 +77,14 @@ const InputBar = ({ onSend, loading }) => {
 
     // All checks passed - send the message
     try {
+      console.log('✅ Sending message:', validation.query);
       rateLimiter.recordRequest();
       onSend(validation.query);
       setInput('');
       setCharCount(0);
+      console.log('🎯 Message sent successfully');
     } catch (error) {
+      console.error('❌ Failed to send message:', error);
       setValidationError({
         message: 'Failed to send message',
         suggestion: 'Please try again in a moment'
@@ -91,7 +101,7 @@ const InputBar = ({ onSend, loading }) => {
     }
   }, []);
 
-  const handleKeyPress = useCallback((e) => {
+  const handleKeyDown = useCallback((e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend(e);
@@ -162,7 +172,7 @@ const InputBar = ({ onSend, loading }) => {
             className={getInputClassName()}
             value={input}
             onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyDown}
             disabled={loading}
             placeholder={loading ? 'Processing your request...' : 'Type your question or search query...'}
             rows={1}

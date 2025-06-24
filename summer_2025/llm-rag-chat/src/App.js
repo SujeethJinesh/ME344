@@ -15,10 +15,11 @@ const App = () => {
   const [query, setQuery] = useState('');
   const [context, setContext] = useState('');
 
-  // New state for modes and MCP log
-  const [mode, setMode] = useState('rag'); // 'rag' or 'mcp'
+  // New state for modes and MCP log  
+  const [mode, setMode] = useState('rag'); // 'rag' or 'mcp' - default to RAG
   const [logMessages, setLogMessages] = useState([]);
   const [processSteps, setProcessSteps] = useState([]);
+  const [isStreaming, setIsStreaming] = useState(true); // Default to streaming on
 
   // Derived state for backward compatibility
   const isRag = mode === 'rag';
@@ -191,9 +192,14 @@ const App = () => {
 
   // --- Original RAG Slang Translator Handler ---
   const handleRagSend = (userInput) => {
-    setMessages([...messages, { text: userInput, isUser: true }]);
+    console.log('🎯 RAG handleRagSend called with:', userInput);
+    
+    // Only add user message once - don't duplicate in handleAugmentedQuery
+    setMessages(prev => [...prev, { text: userInput, isUser: true }]);
     setLoading(true);
     setProcessSteps([]); // Clear previous process steps
+    
+    console.log('📝 Added user message, set loading=true');
     
     // Enhanced educational logging for RAG process
     handleProcessStep("🎯 Starting RAG (Retrieval Augmented Generation) process...", "info");
@@ -201,6 +207,7 @@ const App = () => {
     handleProcessStep(`📝 User Query: "${userInput}"`, "query");
     handleProcessStep("🔄 RAG Pipeline: Connect → Embed → Search → Retrieve → Augment → Generate", "planning");
     
+    console.log('🔧 Setting query to trigger RAG component:', userInput);
     setQuery(userInput);
   };
 
@@ -233,7 +240,7 @@ const App = () => {
         body: JSON.stringify({
           model: modelName,
           prompt: augmentedQuery,
-          stream: true, // Enable streaming
+          stream: isStreaming, // Use streaming toggle
         }),
       });
       
@@ -248,60 +255,50 @@ const App = () => {
       }
 
       handleProcessStep("✅ Ollama connection established - starting generation", "success");
-      handleProcessStep("📚 Educational Note: Using streaming generation for real-time response", "info");
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let done = false;
-      let accumulatedResponse = '';
-      let tokenCount = 0;
-      let chunkCount = 0;
-
-      handleProcessStep("🌊 STREAMING PHASE: Receiving token stream from LLM...", "streaming");
-      handleProcessStep("📚 Educational Note: Each chunk contains generated tokens", "info");
-
-      while (!done) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
+      
+      if (isStreaming) {
+        handleProcessStep("📚 Educational Note: Using streaming generation for real-time response", "info");
         
-        if (value) {
-          chunkCount++;
-          const chunk = decoder.decode(value, { stream: !done });
-          const lines = chunk.split('\n').filter(line => line.trim() !== '');
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let done = false;
+        let accumulatedResponse = '';
+        let tokenCount = 0;
+
+        handleProcessStep("🌊 STREAMING PHASE: Receiving token stream from LLM...", "streaming");
+        handleProcessStep("📚 Educational Note: Each chunk contains generated tokens", "info");
+
+        while (!done) {
+          const { value, done: readerDone } = await reader.read();
+          done = readerDone;
           
-          handleProcessStep(`📦 Processing LLM chunk ${chunkCount} (${lines.length} lines)`, "timing");
-          
-          for (const line of lines) {
-            try {
-              const data = JSON.parse(line);
-              if (data.response) {
-                tokenCount++;
-                accumulatedResponse += data.response;
-                
-                // Update the streaming message in real-time
-                setMessages((prev) => 
-                  prev.map((msg) => 
-                    msg.id === messageId 
-                      ? { ...msg, text: accumulatedResponse }
-                      : msg
-                  )
-                );
-                
-                // Log progress every 10 tokens with educational context
-                if (tokenCount % 10 === 0) {
-                  handleProcessStep(`🔄 Token Generation: ${tokenCount} tokens (${accumulatedResponse.length} chars)`, "metrics");
-                  if (tokenCount === 10) {
-                    handleProcessStep("📚 Educational Note: Tokens are words/word-pieces generated sequentially", "info");
-                  }
+          if (value) {
+            const chunk = decoder.decode(value, { stream: !done });
+            const lines = chunk.split('\n').filter(line => line.trim() !== '');
+            
+            for (const line of lines) {
+              try {
+                const data = JSON.parse(line);
+                if (data.response) {
+                  tokenCount++;
+                  accumulatedResponse += data.response;
+                  
+                  // Update the streaming message in real-time
+                  setMessages((prev) => {
+                    return prev.map((msg) => 
+                      msg.id === messageId 
+                        ? { ...msg, text: accumulatedResponse }
+                        : msg
+                    );
+                  });
                 }
-              }
-              
-              // Check if the response is complete
-              if (data.done) {
-                const generationTime = Date.now() - ollamaStartTime;
-                const tokensPerSecond = tokenCount > 0 ? (tokenCount / (generationTime / 1000)).toFixed(1) : 0;
                 
-                handleProcessStep(`🎉 LLM generation complete: ${tokenCount} tokens in ${generationTime}ms (${tokensPerSecond} tokens/sec)`, "metrics");
+                // Check if the response is complete
+                if (data.done) {
+                  const generationTime = Date.now() - ollamaStartTime;
+                  const tokensPerSecond = tokenCount > 0 ? (tokenCount / (generationTime / 1000)).toFixed(1) : 0;
+                  
+                  handleProcessStep(`🎉 LLM generation complete: ${tokenCount} tokens in ${generationTime}ms (${tokensPerSecond} tokens/sec)`, "metrics");
                 
                 // Mark streaming as complete
                 setMessages((prev) => 
@@ -327,6 +324,30 @@ const App = () => {
       
       if (!accumulatedResponse) {
         throw new Error('No response received from the model');
+      }
+      } else {
+        // Non-streaming mode
+        handleProcessStep("📚 Educational Note: Using non-streaming generation", "info");
+        handleProcessStep("⏳ Waiting for complete response from LLM...", "info");
+        
+        const responseData = await response.json();
+        
+        if (responseData.response) {
+          const generationTime = Date.now() - ollamaStartTime;
+          handleProcessStep(`🎉 LLM generation complete in ${generationTime}ms`, "metrics");
+          handleProcessStep("✅ Response generation finished", "success");
+          
+          // Update message with complete response
+          setMessages((prev) => 
+            prev.map((msg) => 
+              msg.id === messageId 
+                ? { ...msg, text: responseData.response, isStreaming: false }
+                : msg
+            )
+          );
+        } else {
+          throw new Error('No response received from the model');
+        }
       }
     } catch (error) {
       console.error('Error fetching LLM response:', error);
@@ -366,15 +387,16 @@ const App = () => {
 
   // --- Main Send Handler ---
   const handleSend = (userInput) => {
+    console.log('🚀 App handleSend called with:', userInput);
+    console.log('📊 Current state - mode:', mode, 'isRag:', isRag, 'isMcp:', isMcp);
+    
     if (isMcp) {
+      console.log('🔬 Routing to MCP research');
       handleMcpResearch(userInput);
-    } else if (isRag) {
-      handleRagSend(userInput);
     } else {
-      // Handle case where no mode is selected if you want to support it
-      console.warn(
-        'No mode selected (RAG or MCP). The message will not be processed.',
-      );
+      // Default to RAG if no clear mode or if RAG is selected
+      console.log('🎯 Routing to RAG (default)');
+      handleRagSend(userInput);
     }
   };
 
@@ -387,9 +409,22 @@ const App = () => {
       <ErrorBoundary componentName="Controls">
         <Controls
           isRag={isRag}
-          setIsRag={(value) => setMode(value ? 'rag' : 'mcp')}
+          setIsRag={(value) => {
+            console.log('🔧 App setIsRag called with:', value);
+            if (value) {
+              setMode('rag');
+            } else if (!isMcp) {
+              // Only allow turning off RAG if MCP is also off
+              setMode('rag'); // Keep RAG on by default
+            }
+          }}
           isMcp={isMcp}
-          setIsMcp={(value) => setMode(value ? 'mcp' : 'rag')}
+          setIsMcp={(value) => {
+            console.log('🔧 App setIsMcp called with:', value);
+            setMode(value ? 'mcp' : 'rag');
+          }}
+          isStreaming={isStreaming}
+          setIsStreaming={setIsStreaming}
         />
       </ErrorBoundary>
       
@@ -420,7 +455,7 @@ const App = () => {
         <InputBar onSend={handleSend} loading={loading} />
       </ErrorBoundary>
       
-      {isRag && !isMcp && query && (
+      {mode === 'rag' && query && (
         <ErrorBoundary componentName="RAG Service">
           <Rag 
             query={query} 
