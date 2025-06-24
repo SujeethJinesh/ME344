@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from './components/Header';
 import ChatBox from './components/ChatBox';
 import InputBar from './components/InputBar';
@@ -13,13 +13,15 @@ const App = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState('');
+  const [queryId, setQueryId] = useState(null);
   const [context, setContext] = useState('');
+  const processedQueryIds = useRef(new Set());
 
   // New state for modes and MCP log  
   const [mode, setMode] = useState('rag'); // 'rag' or 'mcp' - default to RAG
   const [logMessages, setLogMessages] = useState([]);
   const [processSteps, setProcessSteps] = useState([]);
-  const [isStreaming, setIsStreaming] = useState(true); // Default to streaming on
+  const [abortController, setAbortController] = useState(null);
 
   // Derived state for backward compatibility
   const isRag = mode === 'rag';
@@ -46,6 +48,17 @@ const App = () => {
     return processSteps[processSteps.length - 1]?.message;
   };
 
+  // Handle stop/cancel request
+  const handleStop = () => {
+    console.log('🛑 Stop requested');
+    if (abortController) {
+      abortController.abort();
+      setAbortController(null);
+      setLoading(false);
+      handleProcessStep("❌ Response generation cancelled by user", "warning");
+    }
+  };
+
   // --- MCP Deep Research Handler ---
   const handleMcpResearch = async (userInput) => {
     setMessages((prev) => [...prev, { text: userInput, isUser: true }]);
@@ -63,6 +76,10 @@ const App = () => {
     handleProcessStep(`📝 Research Query: "${userInput}"`, "query");
     handleProcessStep("🧠 Agent will: Plan → Search → Process → Update Knowledge → Retrieve → Synthesize", "planning");
 
+    // Create new abort controller
+    const controller = new AbortController();
+    setAbortController(controller);
+
     try {
       handleProcessStep("🔌 Connecting to Deep Research Agent...", "info");
       
@@ -70,6 +87,7 @@ const App = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: userInput }),
+        signal: controller.signal,
       });
 
       if (!response.ok) {
@@ -169,6 +187,12 @@ const App = () => {
     } catch (error) {
       console.error('Error during deep research:', error);
       
+      if (error.name === 'AbortError') {
+        handleProcessStep("⚠️ Deep Research cancelled", "warning");
+        setMessages((prev) => [...prev, { text: 'Research cancelled by user.', isUser: false }]);
+        return;
+      }
+      
       handleProcessStep("❌ Deep Research process failed", "error");
       
       let errorMessage = 'Failed to perform deep research. ';
@@ -187,6 +211,7 @@ const App = () => {
       setMessages((prev) => [...prev, { text: errorMessage, isUser: false }]);
     } finally {
       setLoading(false);
+      setAbortController(null);
     }
   };
 
@@ -207,11 +232,25 @@ const App = () => {
     handleProcessStep(`📝 User Query: "${userInput}"`, "query");
     handleProcessStep("🔄 RAG Pipeline: Connect → Embed → Search → Retrieve → Augment → Generate", "planning");
     
-    console.log('🔧 Setting query to trigger RAG component:', userInput);
+    const newQueryId = Date.now();
+    console.log('🔧 Setting query to trigger RAG component:', userInput, 'with ID:', newQueryId);
+    setQueryId(newQueryId);
     setQuery(userInput);
   };
 
-  const handleAugmentedQuery = async (augmentedQuery, contextData) => {
+  const handleAugmentedQuery = async (augmentedQuery, contextData, currentQueryId) => {
+    console.log('🔄 handleAugmentedQuery called with context length:', contextData?.length, 'queryId:', currentQueryId);
+    
+    // Check if we've already processed this query ID
+    if (currentQueryId && processedQueryIds.current.has(currentQueryId)) {
+      console.warn('⚠️ Query already processed, ignoring duplicate call for ID:', currentQueryId);
+      return;
+    }
+    
+    if (currentQueryId) {
+      processedQueryIds.current.add(currentQueryId);
+    }
+    
     setContext(contextData); // Display context in the sidebar
     const ollamaStartTime = Date.now();
     
@@ -234,14 +273,19 @@ const App = () => {
       
       handleProcessStep("🔌 Establishing connection to Ollama API...", "info");
       
+      // Create new abort controller
+      const controller = new AbortController();
+      setAbortController(controller);
+      
       const response = await fetch(`${ollamaUrl}/api/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: modelName,
           prompt: augmentedQuery,
-          stream: isStreaming, // Use streaming toggle
+          stream: true, // Always use streaming
         }),
+        signal: controller.signal,
       });
       
       if (!response.ok) {
@@ -255,51 +299,49 @@ const App = () => {
       }
 
       handleProcessStep("✅ Ollama connection established - starting generation", "success");
+      handleProcessStep("📚 Educational Note: Using streaming generation for real-time response", "info");
       
-      if (isStreaming) {
-        handleProcessStep("📚 Educational Note: Using streaming generation for real-time response", "info");
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      let accumulatedResponse = '';
+      let tokenCount = 0;
+
+      handleProcessStep("🌊 STREAMING PHASE: Receiving token stream from LLM...", "streaming");
+      handleProcessStep("📚 Educational Note: Each chunk contains generated tokens", "info");
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
         
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let done = false;
-        let accumulatedResponse = '';
-        let tokenCount = 0;
-
-        handleProcessStep("🌊 STREAMING PHASE: Receiving token stream from LLM...", "streaming");
-        handleProcessStep("📚 Educational Note: Each chunk contains generated tokens", "info");
-
-        while (!done) {
-          const { value, done: readerDone } = await reader.read();
-          done = readerDone;
+        if (value) {
+          const chunk = decoder.decode(value, { stream: !done });
+          const lines = chunk.split('\n').filter(line => line.trim() !== '');
           
-          if (value) {
-            const chunk = decoder.decode(value, { stream: !done });
-            const lines = chunk.split('\n').filter(line => line.trim() !== '');
-            
-            for (const line of lines) {
-              try {
-                const data = JSON.parse(line);
-                if (data.response) {
-                  tokenCount++;
-                  accumulatedResponse += data.response;
-                  
-                  // Update the streaming message in real-time
-                  setMessages((prev) => {
-                    return prev.map((msg) => 
-                      msg.id === messageId 
-                        ? { ...msg, text: accumulatedResponse }
-                        : msg
-                    );
-                  });
-                }
+          for (const line of lines) {
+            try {
+              const data = JSON.parse(line);
+              if (data.response) {
+                tokenCount++;
+                accumulatedResponse += data.response;
                 
-                // Check if the response is complete
-                if (data.done) {
-                  const generationTime = Date.now() - ollamaStartTime;
-                  const tokensPerSecond = tokenCount > 0 ? (tokenCount / (generationTime / 1000)).toFixed(1) : 0;
-                  
-                  handleProcessStep(`🎉 LLM generation complete: ${tokenCount} tokens in ${generationTime}ms (${tokensPerSecond} tokens/sec)`, "metrics");
+                // Update the streaming message in real-time
+                setMessages((prev) => {
+                  return prev.map((msg) => 
+                    msg.id === messageId 
+                      ? { ...msg, text: accumulatedResponse }
+                      : msg
+                  );
+                });
+              }
+              
+              // Check if the response is complete
+              if (data.done) {
+                const generationTime = Date.now() - ollamaStartTime;
+                const tokensPerSecond = tokenCount > 0 ? (tokenCount / (generationTime / 1000)).toFixed(1) : 0;
                 
+                handleProcessStep(`🎉 LLM generation complete: ${tokenCount} tokens in ${generationTime}ms (${tokensPerSecond} tokens/sec)`, "metrics");
+              
                 // Mark streaming as complete
                 setMessages((prev) => 
                   prev.map((msg) => 
@@ -325,32 +367,21 @@ const App = () => {
       if (!accumulatedResponse) {
         throw new Error('No response received from the model');
       }
-      } else {
-        // Non-streaming mode
-        handleProcessStep("📚 Educational Note: Using non-streaming generation", "info");
-        handleProcessStep("⏳ Waiting for complete response from LLM...", "info");
-        
-        const responseData = await response.json();
-        
-        if (responseData.response) {
-          const generationTime = Date.now() - ollamaStartTime;
-          handleProcessStep(`🎉 LLM generation complete in ${generationTime}ms`, "metrics");
-          handleProcessStep("✅ Response generation finished", "success");
-          
-          // Update message with complete response
-          setMessages((prev) => 
-            prev.map((msg) => 
-              msg.id === messageId 
-                ? { ...msg, text: responseData.response, isStreaming: false }
-                : msg
-            )
-          );
-        } else {
-          throw new Error('No response received from the model');
-        }
-      }
     } catch (error) {
       console.error('Error fetching LLM response:', error);
+      
+      if (error.name === 'AbortError') {
+        handleProcessStep("⚠️ LLM generation cancelled", "warning");
+        // Update the streaming message with cancellation notice
+        setMessages((prev) => 
+          prev.map((msg) => 
+            msg.id === messageId 
+              ? { ...msg, text: msg.text || 'Response generation cancelled by user.', isStreaming: false }
+              : msg
+          )
+        );
+        return;
+      }
       
       handleProcessStep("❌ LLM generation failed", "error");
       
@@ -382,6 +413,10 @@ const App = () => {
     } finally {
       setLoading(false);
       setQuery('');
+      setQueryId(null);
+      setAbortController(null);
+      // Clear processed query IDs to prevent memory leak
+      processedQueryIds.current.clear();
     }
   };
 
@@ -423,8 +458,6 @@ const App = () => {
             console.log('🔧 App setIsMcp called with:', value);
             setMode(value ? 'mcp' : 'rag');
           }}
-          isStreaming={isStreaming}
-          setIsStreaming={setIsStreaming}
         />
       </ErrorBoundary>
       
@@ -452,13 +485,14 @@ const App = () => {
       </div>
       
       <ErrorBoundary componentName="InputBar">
-        <InputBar onSend={handleSend} loading={loading} />
+        <InputBar onSend={handleSend} loading={loading} onStop={handleStop} />
       </ErrorBoundary>
       
       {mode === 'rag' && query && (
         <ErrorBoundary componentName="RAG Service">
           <Rag 
-            query={query} 
+            query={query}
+            queryId={queryId}
             onAugmentedQuery={handleAugmentedQuery}
             onProcessStep={handleProcessStep}
           />

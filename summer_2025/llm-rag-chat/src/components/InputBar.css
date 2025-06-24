@@ -5,6 +5,8 @@
 
 .inputbar-container {
   width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
   margin-top: auto;
   padding: 16px;
   background: #ffffff;
@@ -64,8 +66,6 @@
 /* Main Input Form */
 .inputbar {
   display: flex;
-  gap: 12px;
-  align-items: flex-end;
   width: 100%;
   position: relative;
   z-index: 1;
@@ -75,11 +75,13 @@
   flex-grow: 1;
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
 }
 
 .inputbar-input {
   width: 100%;
-  padding: 12px 80px 12px 16px;
+  padding: 12px 120px 12px 16px;
   border: 2px solid #e0e0e0;
   border-radius: 24px;
   font-size: 16px;
@@ -124,10 +126,10 @@
 /* Character Counter */
 .char-count {
   position: absolute;
-  right: 16px;
+  right: 52px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 12px;
+  font-size: 11px;
   color: #718096;
   background: #ffffff;
   padding: 2px 6px;
@@ -150,48 +152,64 @@
 }
 
 /* Send Button */
-.send-button {
+.send-button,
+.stop-button {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 12px 20px;
-  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
-  color: white;
+  width: 36px;
+  height: 36px;
   border: none;
-  border-radius: 24px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: 50%;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
-  min-width: 100px;
-  height: 48px;
-  white-space: nowrap;
-  position: relative;
   z-index: 2;
   flex-shrink: 0;
 }
 
+.send-button {
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+  color: white;
+}
+
+.stop-button {
+  background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+  color: white;
+}
+
 .send-button:hover:not(:disabled) {
   background: linear-gradient(135deg, #3182ce 0%, #2c5aa0 100%);
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
 }
 
 .send-button:active:not(:disabled) {
-  transform: translateY(0);
   box-shadow: 0 2px 4px rgba(49, 130, 206, 0.2);
 }
 
 .send-button:disabled {
   background: #cbd5e0;
   cursor: not-allowed;
-  transform: none;
   box-shadow: none;
 }
 
-.send-icon {
-  font-size: 14px;
+.stop-button:hover {
+  background: linear-gradient(135deg, #c53030 0%, #9b2c2c 100%);
+  box-shadow: 0 4px 12px rgba(197, 48, 48, 0.3);
+}
+
+.stop-button:active {
+  box-shadow: 0 2px 4px rgba(197, 48, 48, 0.2);
+}
+
+.send-icon,
+.stop-icon {
+  font-size: 18px;
+  line-height: 1;
 }
 
 /* Loading States */
@@ -275,25 +293,26 @@
     padding: 12px;
   }
   
-  .inputbar {
-    gap: 8px;
-  }
   
   .inputbar-input {
     font-size: 16px; /* Prevent zoom on iOS */
     padding: 10px 70px 10px 12px;
   }
   
-  .send-button {
-    padding: 10px 16px;
-    min-width: 80px;
-    height: 44px;
-    font-size: 13px;
+  .send-button,
+  .stop-button {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .send-icon,
+  .stop-icon {
+    font-size: 16px;
   }
   
   .char-count {
-    font-size: 11px;
-    right: 12px;
+    font-size: 10px;
+    right: 44px;
     min-width: 40px;
   }
 }

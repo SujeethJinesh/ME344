@@ -63,39 +63,6 @@ const getStepClass = (type) => {
   }
 };
 
-const StepProgressBar = ({ processSteps, isMcp }) => {
-  const getCompletedSteps = () => {
-    return processSteps.filter(step => 
-      step.type === 'success' || 
-      step.message.includes('✅') || 
-      step.message.includes('completed') ||
-      step.message.includes('ready')
-    ).length;
-  };
-
-  const getExpectedSteps = () => {
-    return isMcp ? 6 : 8; // MCP: planning, search, process, update, retrieve, synthesize; RAG: init, connect, embed, search, retrieve, augment, generate, complete
-  };
-
-  const progress = Math.min(100, (getCompletedSteps() / getExpectedSteps()) * 100);
-
-  return (
-    <div className="progress-section">
-      <h3>📈 Progress Overview</h3>
-      <div className="progress-bar-container">
-        <div className="progress-bar">
-          <div 
-            className="progress-bar-fill" 
-            style={{ width: `${progress}%` }}
-          ></div>
-        </div>
-        <div className="progress-text">
-          {getCompletedSteps()}/{getExpectedSteps()} steps completed ({Math.round(progress)}%)
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const getCurrentPhase = (processSteps, isMcp) => {
   if (processSteps.length === 0) return 'Initializing...';
@@ -136,8 +103,6 @@ const Sidebar = ({ context, logMessages, processSteps = [], isMcp }) => (
       </div>
     </div>
 
-    {/* Progress Bar */}
-    <StepProgressBar processSteps={processSteps} isMcp={isMcp} />
 
     {isMcp ? (
       <>
@@ -186,6 +151,29 @@ const Sidebar = ({ context, logMessages, processSteps = [], isMcp }) => (
       </>
     ) : (
       <>
+        {/* Context Display - Enhanced */}
+        <div className="context-section">
+          <h3>📚 Retrieved Context</h3>
+          <div className="context-content">
+            {context ? (
+              <>
+                <div className="context-meta">
+                  Length: {context.length} characters | 
+                  Words: {context.split(' ').length} |
+                  Preview:
+                </div>
+                <p className="context-text">{context.substring(0, 200)}...</p>
+                <details className="context-details">
+                  <summary>View Full Context</summary>
+                  <p className="context-text-full">{context}</p>
+                </details>
+              </>
+            ) : (
+              <p className="context-placeholder">No context retrieved yet...</p>
+            )}
+          </div>
+        </div>
+
         {/* RAG Statistics */}
         <div className="rag-stats-section">
           <h3>📊 RAG Statistics</h3>
@@ -211,29 +199,6 @@ const Sidebar = ({ context, logMessages, processSteps = [], isMcp }) => (
                 }
               </span>
             </div>
-          </div>
-        </div>
-
-        {/* Context Display - Enhanced */}
-        <div className="context-section">
-          <h3>📚 Retrieved Context</h3>
-          <div className="context-content">
-            {context ? (
-              <>
-                <div className="context-meta">
-                  Length: {context.length} characters | 
-                  Words: {context.split(' ').length} |
-                  Preview:
-                </div>
-                <p className="context-text">{context.substring(0, 200)}...</p>
-                <details className="context-details">
-                  <summary>View Full Context</summary>
-                  <p className="context-text-full">{context}</p>
-                </details>
-              </>
-            ) : (
-              <p className="context-placeholder">No context retrieved yet...</p>
-            )}
           </div>
         </div>
       </>
