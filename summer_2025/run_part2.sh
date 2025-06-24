@@ -77,7 +77,7 @@ check_working_directory() {
 check_python_environment() {
     log_step "Checking Python virtual environment..."
     
-    local venv_paths=("$HOME/codes/python/python-venv" "./.venv" "./venv")
+    local venv_paths=("$HOME/codes/python/.venv" "./.venv" "./venv")
     local venv_found=false
     
     for venv_path in "${venv_paths[@]}"; do

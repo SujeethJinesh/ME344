@@ -18,6 +18,8 @@ readonly NC='\033[0m' # No Color
 
 # Service PIDs for cleanup
 declare CHROMA_PID OLLAMA_PID NPM_PID JUPYTER_PID
+# Jupyter URL with token
+declare JUPYTER_URL
 
 # ===================================================================
 # UTILITY FUNCTIONS
@@ -76,7 +78,7 @@ check_working_directory() {
 check_python_environment() {
     log_step "Checking Python virtual environment..."
     
-    local venv_paths=("$HOME/codes/python/python-venv" "./.venv" "./venv")
+    local venv_paths=("./.venv" "./venv" "$HOME/codes/python/.venv")
     local venv_found=false
     
     for venv_path in "${venv_paths[@]}"; do
@@ -85,6 +87,7 @@ check_python_environment() {
             # shellcheck source=/dev/null
             source "$venv_path/bin/activate"
             venv_found=true
+            export VENV_PATH="$venv_path"
             break
         fi
     done
@@ -97,9 +100,8 @@ check_python_environment() {
         done
         log_info ""
         log_info "To create a virtual environment:"
-        log_info "  mkdir -p ~/codes/python && cd ~/codes/python"
-        log_info "  python3.11 -m venv python-venv"
-        log_info "  source ~/codes/python/python-venv/bin/activate"
+        log_info "  python3 -m venv .venv"
+        log_info "  source .venv/bin/activate"
         log_info "  pip install -r requirements.txt"
         exit 1
     fi
@@ -112,6 +114,31 @@ check_python_environment() {
     fi
     
     log_success "Virtual environment activated: $(which python)"
+    
+    # Install and register Jupyter kernel for this venv
+    log_step "Setting up Jupyter kernel for virtual environment..."
+    if ! python -m ipykernel --version &> /dev/null; then
+        log_info "Installing ipykernel in virtual environment..."
+        pip install ipykernel &> /dev/null || {
+            log_error "Failed to install ipykernel"
+            exit 1
+        }
+    fi
+    
+    # Register the kernel
+    local kernel_name="me344-rag-kernel"
+    log_info "Registering Jupyter kernel: $kernel_name"
+    
+    # Remove existing kernel if it exists
+    jupyter kernelspec remove "$kernel_name" -f &> /dev/null || true
+    
+    # Install fresh kernel
+    python -m ipykernel install --user --name="$kernel_name" --display-name="ME344 RAG (Python)" || {
+        log_error "Failed to register kernel"
+        exit 1
+    }
+    
+    log_success "Jupyter kernel registered. Select 'ME344 RAG (Python)' in Jupyter"
 }
 
 check_python_dependencies() {
@@ -131,6 +158,13 @@ check_python_dependencies() {
         log_info "Please install dependencies:"
         log_info "  pip install -r requirements.txt"
         exit 1
+    fi
+    
+    # Check ChromaDB version
+    local chroma_version
+    chroma_version=$(pip show chromadb 2>/dev/null | grep Version | cut -d' ' -f2)
+    if [[ -n "$chroma_version" ]]; then
+        log_info "ChromaDB version: $chroma_version"
     fi
     
     log_success "Python dependencies verified"
@@ -203,6 +237,31 @@ check_node_dependencies() {
     log_success "Node.js dependencies verified"
 }
 
+kill_processes_on_port() {
+    local port="$1"
+    local service_name="$2"
+    
+    if command -v lsof &> /dev/null; then
+        local pids
+        pids=$(lsof -ti ":$port" 2>/dev/null)
+        if [[ -n "$pids" ]]; then
+            log_info "Killing processes on port $port ($service_name)..."
+            echo "$pids" | xargs kill -9 2>/dev/null || true
+            sleep 1
+            # Verify processes are killed
+            if lsof -Pi ":$port" -sTCP:LISTEN -t >/dev/null 2>&1; then
+                log_warning "Some processes on port $port may still be running"
+            else
+                log_success "Port $port freed"
+            fi
+        fi
+    elif command -v netstat &> /dev/null && command -v kill &> /dev/null; then
+        # Fallback method for systems without lsof
+        log_warning "Using fallback method to kill processes on port $port"
+        log_info "You may need to manually kill processes using: sudo lsof -ti :$port | xargs kill -9"
+    fi
+}
+
 check_port_availability() {
     log_step "Checking port availability..."
     
@@ -210,36 +269,98 @@ check_port_availability() {
     local ports=(${frontend_port} 8000 8888 11434)
     local port_descriptions=("React Frontend" "ChromaDB" "Jupyter Notebook" "Ollama")
     local busy_ports=()
+    local busy_port_details=()
     
+    # Check which ports are in use
     for i in "${!ports[@]}"; do
         local port=${ports[$i]}
         local desc=${port_descriptions[$i]}
         
         if command -v lsof &> /dev/null; then
             if lsof -Pi ":$port" -sTCP:LISTEN -t >/dev/null 2>&1; then
-                busy_ports+=("$port ($desc)")
+                busy_ports+=("$port")
+                busy_port_details+=("$port ($desc)")
             fi
         elif command -v netstat &> /dev/null; then
             if netstat -ln 2>/dev/null | grep -q ":$port "; then
-                busy_ports+=("$port ($desc)")
+                busy_ports+=("$port")
+                busy_port_details+=("$port ($desc)")
             fi
         fi
     done
     
     if [[ ${#busy_ports[@]} -gt 0 ]]; then
-        log_warning "Ports already in use: ${busy_ports[*]}"
-        log_info "These ports are required:"
+        log_warning "Ports already in use: ${busy_port_details[*]}"
+        log_info ""
+        log_info "These ports are required for the RAG system:"
         log_info "  ${frontend_port} - React Frontend"
         log_info "  8000 - ChromaDB"
         log_info "  8888 - Jupyter Notebook"
         log_info "  11434 - Ollama"
         log_info ""
-        log_info "Continue anyway? Services may fail to start. (y/N)"
-        read -r response
-        if [[ ! "$response" =~ ^[Yy]$ ]]; then
-            log_info "Setup cancelled. Please free the required ports."
-            exit 1
+        
+        # Show current processes using the ports
+        if command -v lsof &> /dev/null; then
+            log_info "Current processes using these ports:"
+            for port in "${busy_ports[@]}"; do
+                echo -e "  ${CYAN}Port $port:${NC}"
+                lsof -Pi ":$port" -sTCP:LISTEN 2>/dev/null | awk 'NR>1 {printf "    %s (PID: %s)\n", $1, $2}' || echo "    Unable to identify process"
+            done
+            log_info ""
         fi
+        
+        # Offer options to the user
+        echo -e "${YELLOW}What would you like to do?${NC}"
+        echo -e "  ${GREEN}1)${NC} Kill existing processes and continue"
+        echo -e "  ${GREEN}2)${NC} Continue anyway (services may fail to start)"
+        echo -e "  ${GREEN}3)${NC} Cancel and exit"
+        echo ""
+        echo -n "Enter your choice (1-3): "
+        read -r choice
+        
+        case "$choice" in
+            1)
+                log_info "Killing existing processes on busy ports..."
+                for i in "${!busy_ports[@]}"; do
+                    local port=${busy_ports[$i]}
+                    local desc=${port_descriptions[$i]}
+                    kill_processes_on_port "$port" "$desc"
+                done
+                
+                # Re-check ports after killing processes
+                local still_busy=()
+                for port in "${busy_ports[@]}"; do
+                    if command -v lsof &> /dev/null; then
+                        if lsof -Pi ":$port" -sTCP:LISTEN -t >/dev/null 2>&1; then
+                            still_busy+=("$port")
+                        fi
+                    fi
+                done
+                
+                if [[ ${#still_busy[@]} -gt 0 ]]; then
+                    log_warning "Some ports are still in use: ${still_busy[*]}"
+                    log_info "Continuing anyway. Some services may fail to start."
+                else
+                    log_success "All required ports are now available"
+                fi
+                ;;
+            2)
+                log_warning "Continuing with busy ports. Some services may fail to start."
+                ;;
+            3)
+                log_info "Setup cancelled. Please free the required ports manually."
+                log_info ""
+                log_info "To kill processes manually, you can use:"
+                for port in "${busy_ports[@]}"; do
+                    echo -e "  ${CYAN}sudo lsof -ti :$port | xargs kill -9${NC}"
+                done
+                exit 1
+                ;;
+            *)
+                log_error "Invalid choice. Please run the script again."
+                exit 1
+                ;;
+        esac
     fi
     
     log_success "Port availability checked"
@@ -293,6 +414,18 @@ start_service() {
     
     log_step "Starting $service_name on port $port..."
     
+    # Check if service is already running on the port
+    if command -v lsof &> /dev/null; then
+        local existing_pid
+        existing_pid=$(lsof -ti ":$port" 2>/dev/null | head -1)
+        if [[ -n "$existing_pid" ]]; then
+            log_info "$service_name already running on port $port (PID: $existing_pid)"
+            eval "$pid_var=$existing_pid"
+            log_success "$service_name detected (PID: $existing_pid)"
+            return 0
+        fi
+    fi
+    
     # Start service in background
     eval "$command" &
     local service_pid=$!
@@ -311,6 +444,127 @@ start_service() {
     fi
     
     log_success "$service_name started (PID: $service_pid)"
+}
+
+start_chromadb_with_venv() {
+    local port="${1:-8000}"
+    
+    log_step "Starting ChromaDB on port $port..."
+    
+    # Check if already running
+    if command -v lsof &> /dev/null; then
+        local existing_pid
+        existing_pid=$(lsof -ti ":$port" 2>/dev/null | head -1)
+        if [[ -n "$existing_pid" ]]; then
+            log_info "ChromaDB already running on port $port (PID: $existing_pid)"
+            CHROMA_PID=$existing_pid
+            return 0
+        fi
+    fi
+    
+    # Ensure we're using the venv's chroma
+    local chroma_cmd="${VENV_PATH}/bin/chroma"
+    if [[ ! -f "$chroma_cmd" ]]; then
+        log_error "ChromaDB not found in virtual environment"
+        log_info "Installing ChromaDB..."
+        pip install chromadb || {
+            log_error "Failed to install ChromaDB"
+            exit 1
+        }
+    fi
+    
+    # Start ChromaDB
+    export CHROMA_SERVER_CORS_ALLOW_ORIGINS='["http://localhost:3000"]'
+    "$chroma_cmd" run --host localhost --port "$port" --path ./chroma > chroma.log 2>&1 &
+    CHROMA_PID=$!
+    
+    # Wait for ChromaDB to fully start
+    local max_attempts=10
+    local attempt=0
+    sleep 2  # Initial wait for ChromaDB to initialize
+    while [[ $attempt -lt $max_attempts ]]; do
+        if curl -s "http://localhost:$port/api/v1/heartbeat" &>/dev/null; then
+            log_success "ChromaDB started successfully (PID: $CHROMA_PID)"
+            return 0
+        fi
+        ((attempt++))
+        sleep 1
+    done
+    
+    # If we get here, ChromaDB failed to start
+    log_error "ChromaDB failed to start after $max_attempts attempts"
+    if [[ -f "chroma.log" ]]; then
+        log_error "Last 20 lines of chroma.log:"
+        tail -20 chroma.log
+    fi
+    kill $CHROMA_PID 2>/dev/null
+    exit 1
+}
+
+start_jupyter_with_venv() {
+    local port="${1:-8888}"
+    
+    log_step "Starting Jupyter Notebook with project virtual environment..."
+    
+    # Ensure we're using the venv's jupyter
+    local jupyter_cmd="${VENV_PATH}/bin/jupyter-notebook"
+    if [[ ! -f "$jupyter_cmd" ]]; then
+        log_info "Installing Jupyter in virtual environment..."
+        pip install notebook &> /dev/null || {
+            log_error "Failed to install Jupyter notebook"
+            exit 1
+        }
+    fi
+    
+    # Create a temporary file to capture Jupyter output
+    local jupyter_log="/tmp/jupyter_startup_$$.log"
+    
+    # Start Jupyter with explicit Python path
+    local python_path="${VENV_PATH}/bin/python"
+    JUPYTER_PREFER_ENV_PATH=1 \
+    JUPYTER_PATH="${VENV_PATH}/share/jupyter" \
+    JUPYTER_DATA_DIR="${VENV_PATH}/share/jupyter" \
+    JUPYTER_RUNTIME_DIR="${VENV_PATH}/share/jupyter/runtime" \
+    "$jupyter_cmd" \
+        --no-browser \
+        --notebook-dir="$PWD" \
+        --NotebookApp.kernel_name="me344-rag-kernel" > "$jupyter_log" 2>&1 &
+    
+    JUPYTER_PID=$!
+    
+    # Wait for Jupyter to start and capture the URL with token
+    local max_attempts=10
+    local attempt=0
+    local jupyter_url=""
+    
+    while [[ $attempt -lt $max_attempts ]]; do
+        sleep 1
+        if ! kill -0 "$JUPYTER_PID" 2>/dev/null; then
+            log_error "Jupyter failed to start"
+            if [[ -f "$jupyter_log" ]]; then
+                cat "$jupyter_log"
+            fi
+            exit 1
+        fi
+        
+        # Look for the URL with token in the log
+        if [[ -f "$jupyter_log" ]]; then
+            jupyter_url=$(grep -oE "http://localhost:${port}/\?token=[a-zA-Z0-9]+" "$jupyter_log" | head -1)
+            if [[ -n "$jupyter_url" ]]; then
+                break
+            fi
+        fi
+        ((attempt++))
+    done
+    
+    # Store the URL globally for later display
+    JUPYTER_URL="$jupyter_url"
+    
+    log_success "Jupyter started with project venv (PID: $JUPYTER_PID)"
+    log_info "Jupyter will use kernel: ME344 RAG (Python)"
+    
+    # Clean up the log file after a delay (keep it for debugging if needed)
+    (sleep 10 && rm -f "$jupyter_log") &
 }
 
 # ===================================================================
@@ -399,8 +653,8 @@ main() {
     
     # Run validation checks
     check_working_directory
-    check_system_requirements
     check_python_environment
+    check_system_requirements
     check_python_dependencies
     check_data_files
     check_node_dependencies
@@ -426,17 +680,13 @@ main() {
         # Start only Jupyter notebook for RAG development
         log_info "🔬 Starting in NOTEBOOK-ONLY mode"
         
-        start_service "Jupyter Notebook" \
-            "jupyter-notebook --no-browser --notebook-dir=$PWD" \
-            "8888" "JUPYTER_PID" 3
+        start_jupyter_with_venv 8888
             
     elif [[ "$frontend_only" == true ]]; then
         # Start only frontend services (assumes RAG is already set up)
         log_info "🌐 Starting in FRONTEND-ONLY mode"
         
-        start_service "ChromaDB" \
-            "(chroma run --host localhost --port 8000 --path ./chroma > /dev/null 2>&1)" \
-            "8000" "CHROMA_PID" 4
+        start_chromadb_with_venv 8000
         
         start_service "Ollama Server" \
             "(ollama serve > /dev/null 2>&1)" \
@@ -449,9 +699,7 @@ main() {
         # Start all services for complete RAG system
         log_info "🎯 Starting COMPLETE RAG system"
         
-        start_service "ChromaDB" \
-            "(chroma run --host localhost --port 8000 --path ./chroma > /dev/null 2>&1)" \
-            "8000" "CHROMA_PID" 4
+        start_chromadb_with_venv 8000
         
         start_service "Ollama Server" \
             "(ollama serve > /dev/null 2>&1)" \
@@ -461,9 +709,7 @@ main() {
             "(cd ./llm-rag-chat && PORT=${frontend_port} npm start)" \
             "${frontend_port}" "NPM_PID" 3
         
-        start_service "Jupyter Notebook" \
-            "jupyter-notebook --no-browser --notebook-dir=$PWD" \
-            "8888" "JUPYTER_PID" 3
+        start_jupyter_with_venv 8888
     fi
     
     echo ""
@@ -480,7 +726,11 @@ main() {
         echo -e "  ${GREEN}Ollama API:${NC}        http://localhost:11434"
     fi
     if [[ "$frontend_only" != true ]]; then
-        echo -e "  ${GREEN}Jupyter Notebook:${NC}  http://localhost:8888"
+        if [[ -n "$JUPYTER_URL" ]]; then
+            echo -e "  ${GREEN}Jupyter Notebook:${NC}  $JUPYTER_URL"
+        else
+            echo -e "  ${GREEN}Jupyter Notebook:${NC}  http://localhost:8888"
+        fi
     fi
     echo ""
     
@@ -491,17 +741,29 @@ main() {
     
     echo -e "${YELLOW}📝 Next Steps:${NC}"
     if [[ "$notebook_only" == true ]]; then
-        echo -e "  1. Open ${GREEN}http://localhost:8888${NC} to access Jupyter"
-        echo -e "  2. Run the ${GREEN}rag.ipynb${NC} notebook to set up your vector database"
-        echo -e "  3. Once complete, restart with ${GREEN}--frontend-only${NC} to test your RAG system"
+        if [[ -n "$JUPYTER_URL" ]]; then
+            echo -e "  1. Open ${GREEN}${JUPYTER_URL}${NC} to access Jupyter"
+        else
+            echo -e "  1. Open ${GREEN}http://localhost:8888${NC} to access Jupyter"
+        fi
+        echo -e "  2. ${RED}IMPORTANT:${NC} Select kernel ${GREEN}'ME344 RAG (Python)'${NC} in the notebook"
+        echo -e "     (Kernel → Change Kernel → ME344 RAG (Python))"
+        echo -e "  3. Run the ${GREEN}rag.ipynb${NC} notebook to set up your vector database"
+        echo -e "  4. Once complete, restart with ${GREEN}--frontend-only${NC} to test your RAG system"
     elif [[ "$frontend_only" == true ]]; then
         echo -e "  1. Open ${GREEN}http://localhost:${frontend_port}${NC} to test your RAG system"
         echo -e "  2. Try asking questions about slang terms"
         echo -e "  3. Experiment with system prompt engineering in ${GREEN}Rag.js${NC}"
     else
-        echo -e "  1. Open ${GREEN}http://localhost:8888${NC} to run the RAG notebook"
-        echo -e "  2. Follow the notebook to populate your vector database"
-        echo -e "  3. Open ${GREEN}http://localhost:${frontend_port}${NC} to test your RAG system"
+        if [[ -n "$JUPYTER_URL" ]]; then
+            echo -e "  1. Open ${GREEN}${JUPYTER_URL}${NC} to run the RAG notebook"
+        else
+            echo -e "  1. Open ${GREEN}http://localhost:8888${NC} to run the RAG notebook"
+        fi
+        echo -e "  2. ${RED}IMPORTANT:${NC} Select kernel ${GREEN}'ME344 RAG (Python)'${NC} in the notebook"
+        echo -e "     (Kernel → Change Kernel → ME344 RAG (Python))"
+        echo -e "  3. Follow the notebook to populate your vector database"
+        echo -e "  4. Open ${GREEN}http://localhost:${frontend_port}${NC} to test your RAG system"
     fi
     
     if [[ "$notebook_only" != true ]]; then

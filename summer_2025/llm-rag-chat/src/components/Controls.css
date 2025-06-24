@@ -1,27 +1,57 @@
 .controls {
   display: flex;
-  gap: 20px;
-  padding: 5px 20px;
-  background-color: #343541;
-  color: #ececf1;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  gap: 30px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #2a2b3a 0%, #3a3b4a 100%);
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   justify-content: center;
   align-items: center;
   font-size: 0.9em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .control-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.control-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .control-item label {
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.toggle-icon {
+  font-size: 1.1em;
+}
+
+.status-active {
+  background: #10b981;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75em;
+  font-weight: 600;
+  margin-left: 8px;
 }
 
 .control-item input[type='checkbox'] {
   cursor: pointer;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
+  accent-color: #3b82f6;
 }

@@ -130,17 +130,17 @@ Now switch back to the student user by running `su - student`. The rest of these
 
 While running as the `student` user, you will want to create a virtual environment to manage dependencies.
 
-If you have not already created a virtual environment before, paste the following into your terminal. This will create a python3.11 virtual environment called "python-venv", and will activate the virtual environment.
+If you have not already created a virtual environment before, paste the following into your terminal. This will create a python3.11 virtual environment called ".venv", and will activate the virtual environment.
 
 ```
 # Create a folder for your python environment
 mkdir -p ~/codes/python && cd ~/codes/python
 
-# Create the actual python environment & call it "python-venv"
-python3.11 -m venv python-venv
+# Create the actual python environment & call it ".venv"
+python3.11 -m venv .venv
 
 # Activate your python environment right now.
-source python-venv/bin/activate
+source .venv/bin/activate
 ```
 
 <details>
@@ -149,7 +149,7 @@ source python-venv/bin/activate
   Virtual environments in Python primarily allow us to resolve dependencies in a controlled environment that are separate from system wide packages. Imagine some packages needing some specific package versions, while others need some others, this could lead to messy problems if you don't resolve dependencies in an isolated environment.
 </details>
 
-You can also add `source python-venv/bin/activate` to your `.bashrc` so you'll activate the virtual environment on login (this is highly recommended).
+You can also add `source .venv/bin/activate` to your `.bashrc` so you'll activate the virtual environment on login (this is highly recommended).
 
 <details>
   <summary>Why use bashrc?</summary>
@@ -219,7 +219,7 @@ Create a Slurm script to launch Jupyter Notebook on `compute-1-1`. Make sure you
 #SBATCH --ntasks=1                          # Number of processes
 #SBATCH --time=03:00:00                     # Time limit request
 
-source ~/codes/python/python-venv/bin/activate
+source ~/codes/python/.venv/bin/activate
 EXEC_DIR=$HOME/project-5
 hostname && jupyter-notebook --no-browser --notebook-dir=$EXEC_DIR
 ```
@@ -335,7 +335,7 @@ This client-server model is how modern, scalable AI applications are built.
 Make sure your python environment is activated from Part 1.
 
 ```
-source python-venv/bin/activate
+source .venv/bin/activate
 ```
 
 Make sure you've installed the requirements.txt
