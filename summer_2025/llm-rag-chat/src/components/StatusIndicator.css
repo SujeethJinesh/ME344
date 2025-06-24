@@ -1,0 +1,117 @@
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #40407a;
+  border-radius: 8px;
+  padding: 10px 15px;
+  margin: 10px 0;
+  border-left: 4px solid #706fd3;
+  transition: all 0.3s ease;
+  min-height: 50px;
+}
+
+.status-ready {
+  border-left-color: #2ed573;
+  background-color: rgba(46, 213, 115, 0.1);
+}
+
+.status-rag {
+  border-left-color: #3742fa;
+  background-color: rgba(55, 66, 250, 0.1);
+}
+
+.status-mcp {
+  border-left-color: #ff6348;
+  background-color: rgba(255, 99, 72, 0.1);
+}
+
+.status-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.status-icon {
+  font-size: 1.5em;
+  transition: transform 0.3s ease;
+}
+
+.status-icon.spinning {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.status-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.status-mode {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #fff;
+}
+
+.status-message {
+  font-size: 0.8em;
+  color: #ddd;
+  opacity: 0.9;
+}
+
+.status-detail {
+  font-size: 0.7em;
+  color: #bbb;
+  opacity: 0.8;
+  font-style: italic;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+/* Pulsing effect when loading */
+.status-rag.status-indicator,
+.status-mcp.status-indicator {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .status-indicator {
+    padding: 8px 12px;
+    gap: 8px;
+    min-height: 40px;
+  }
+  
+  .status-icon-container {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .status-icon {
+    font-size: 1.2em;
+  }
+  
+  .status-mode {
+    font-size: 0.8em;
+  }
+  
+  .status-message {
+    font-size: 0.7em;
+  }
+}

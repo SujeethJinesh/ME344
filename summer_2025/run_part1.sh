@@ -17,7 +17,7 @@ readonly CYAN='\033[0;36m'
 readonly NC='\033[0m' # No Color
 
 # Service PIDs for cleanup
-declare -g CHROMA_PID OLLAMA_PID NPM_PID JUPYTER_PID
+declare CHROMA_PID OLLAMA_PID NPM_PID JUPYTER_PID
 
 # ===================================================================
 # UTILITY FUNCTIONS
@@ -206,7 +206,8 @@ check_node_dependencies() {
 check_port_availability() {
     log_step "Checking port availability..."
     
-    local ports=(3000 8000 8888 11434)
+    local frontend_port="${FRONTEND_PORT:-3000}"
+    local ports=(${frontend_port} 8000 8888 11434)
     local port_descriptions=("React Frontend" "ChromaDB" "Jupyter Notebook" "Ollama")
     local busy_ports=()
     
@@ -228,7 +229,7 @@ check_port_availability() {
     if [[ ${#busy_ports[@]} -gt 0 ]]; then
         log_warning "Ports already in use: ${busy_ports[*]}"
         log_info "These ports are required:"
-        log_info "  3000 - React Frontend"
+        log_info "  ${frontend_port} - React Frontend"
         log_info "  8000 - ChromaDB"
         log_info "  8888 - Jupyter Notebook"
         log_info "  11434 - Ollama"
@@ -410,9 +411,16 @@ main() {
     log_success "All validation checks passed! Starting services..."
     echo ""
     
-    # Set environment variables
-    export CHROMA_SERVER_CORS_ALLOW_ORIGINS='["http://localhost:3000"]'
+    # Set environment variables with flexible CORS configuration
+    local frontend_port="${FRONTEND_PORT:-3000}"
+    local cors_origins="${CHROMA_SERVER_CORS_ALLOW_ORIGINS:-[\"http://localhost:${frontend_port}\"]}"
+    
+    export CHROMA_SERVER_CORS_ALLOW_ORIGINS="${cors_origins}"
     export DOCUMENTS_TO_ADD="${DOCUMENTS_TO_ADD:-500}"
+    export FRONTEND_PORT="${frontend_port}"
+    
+    log_info "CORS configuration: ${cors_origins}"
+    log_info "Frontend will run on port: ${frontend_port}"
     
     if [[ "$notebook_only" == true ]]; then
         # Start only Jupyter notebook for RAG development
@@ -435,8 +443,8 @@ main() {
             "11434" "OLLAMA_PID" 5
         
         start_service "React Frontend" \
-            "(cd ./llm-rag-chat && npm start)" \
-            "3000" "NPM_PID" 3
+            "(cd ./llm-rag-chat && PORT=${frontend_port} npm start)" \
+            "${frontend_port}" "NPM_PID" 3
     else
         # Start all services for complete RAG system
         log_info "🎯 Starting COMPLETE RAG system"
@@ -450,8 +458,8 @@ main() {
             "11434" "OLLAMA_PID" 5
         
         start_service "React Frontend" \
-            "(cd ./llm-rag-chat && npm start)" \
-            "3000" "NPM_PID" 3
+            "(cd ./llm-rag-chat && PORT=${frontend_port} npm start)" \
+            "${frontend_port}" "NPM_PID" 3
         
         start_service "Jupyter Notebook" \
             "jupyter-notebook --no-browser --notebook-dir=$PWD" \
@@ -467,7 +475,7 @@ main() {
     # Display service information
     echo -e "${CYAN}📋 Service URLs:${NC}"
     if [[ "$notebook_only" != true ]]; then
-        echo -e "  ${GREEN}React Frontend:${NC}     http://localhost:3000"
+        echo -e "  ${GREEN}React Frontend:${NC}     http://localhost:${frontend_port}"
         echo -e "  ${GREEN}ChromaDB:${NC}          http://localhost:8000"
         echo -e "  ${GREEN}Ollama API:${NC}        http://localhost:11434"
     fi
@@ -487,19 +495,19 @@ main() {
         echo -e "  2. Run the ${GREEN}rag.ipynb${NC} notebook to set up your vector database"
         echo -e "  3. Once complete, restart with ${GREEN}--frontend-only${NC} to test your RAG system"
     elif [[ "$frontend_only" == true ]]; then
-        echo -e "  1. Open ${GREEN}http://localhost:3000${NC} to test your RAG system"
+        echo -e "  1. Open ${GREEN}http://localhost:${frontend_port}${NC} to test your RAG system"
         echo -e "  2. Try asking questions about slang terms"
         echo -e "  3. Experiment with system prompt engineering in ${GREEN}Rag.js${NC}"
     else
         echo -e "  1. Open ${GREEN}http://localhost:8888${NC} to run the RAG notebook"
         echo -e "  2. Follow the notebook to populate your vector database"
-        echo -e "  3. Open ${GREEN}http://localhost:3000${NC} to test your RAG system"
+        echo -e "  3. Open ${GREEN}http://localhost:${frontend_port}${NC} to test your RAG system"
     fi
     
     if [[ "$notebook_only" != true ]]; then
         echo ""
         echo -e "${BLUE}🌐 Port Forwarding (if on remote server):${NC}"
-        echo -e "  ${CYAN}ssh -L 3000:localhost:3000 -L 8000:localhost:8000 -L 8888:localhost:8888 -L 11434:localhost:11434 user@server${NC}"
+        echo -e "  ${CYAN}ssh -L ${frontend_port}:localhost:${frontend_port} -L 8000:localhost:8000 -L 8888:localhost:8888 -L 11434:localhost:11434 user@server${NC}"
     fi
     
     echo -e "  4. Press ${RED}Ctrl+C${NC} in this terminal to stop all services"

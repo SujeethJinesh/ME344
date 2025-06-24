@@ -166,25 +166,32 @@ def initialize_components() -> bool:
     try:
         # Initialize LLM
         logger.info("🔧 Initializing LLM...")
+        llm_model = os.getenv('LLM_MODEL', 'llama3.1')
+        ollama_url = os.getenv('OLLAMA_BASE_URL', 'http://localhost:11434')
+        logger.info(f"Using LLM model: {llm_model} at {ollama_url}")
         llm = ChatOllama(
-            model=os.getenv('LLM_MODEL'),
-            base_url=os.getenv('OLLAMA_BASE_URL'),
+            model=llm_model,
+            base_url=ollama_url,
             temperature=0
         )
         
         # Initialize embeddings
         logger.info("🔧 Initializing embeddings...")
+        embedding_model = os.getenv('EMBEDDING_MODEL', 'nomic-embed-text')
+        logger.info(f"Using embedding model: {embedding_model} at {ollama_url}")
         embedding_function = OllamaEmbeddings(
-            model=os.getenv('EMBEDDING_MODEL'),
-            base_url=os.getenv('OLLAMA_BASE_URL')
+            model=embedding_model,
+            base_url=ollama_url
         )
         
         # Initialize vector store
         logger.info("🔧 Initializing vector store...")
+        chroma_dir = os.getenv('CHROMA_PERSIST_DIR', './chroma')
+        logger.info(f"Using ChromaDB directory: {chroma_dir}")
         vectorstore = Chroma(
             collection_name="llm_rag_collection",
             embedding_function=embedding_function,
-            persist_directory=os.getenv('CHROMA_PERSIST_DIR'),
+            persist_directory=chroma_dir,
         )
         
         # Initialize retriever
