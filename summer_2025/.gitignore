@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ChromaDB
+chroma/
+*.db
+*.sqlite3
+
+# Logs
+*.log
+*.out
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# React build
+llm-rag-chat/build/
+llm-rag-chat/.env.local
+
+# Test coverage
+coverage/
+.coverage
+htmlcov/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*~
+
+# MCP server
+mcp_server/__pycache__/
+
+# Deep research agent
+deep_research_agent/__pycache__/

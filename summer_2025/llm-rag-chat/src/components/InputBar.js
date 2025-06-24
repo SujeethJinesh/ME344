@@ -6,7 +6,7 @@ import './InputBar.css';
  * InputBar Component
  * Enhanced input component with validation, rate limiting, and user guidance
  */
-const InputBar = ({ onSend, loading }) => {
+const InputBar = ({ onSend, loading, onStop }) => {
   const [input, setInput] = useState('');
   const [validationError, setValidationError] = useState(null);
   const [rateLimitWarning, setRateLimitWarning] = useState(null);
@@ -189,41 +189,34 @@ const InputBar = ({ onSend, loading }) => {
             }}
           />
           
+          {/* Button inside input wrapper */}
+          {loading ? (
+            <button 
+              type="button" 
+              className="stop-button"
+              onClick={onStop}
+              title="Stop generating response"
+            >
+              <span className="stop-icon">⏹️</span>
+            </button>
+          ) : (
+            <button 
+              type="submit" 
+              className="send-button"
+              disabled={charCount === 0 || !!validationError}
+              title={charCount === 0 ? 'Enter a message' : 'Send message'}
+            >
+              <span className="send-icon">📤</span>
+            </button>
+          )}
+          
           {/* Character Counter */}
           <div className={getCharCountClassName()}>
             {charCount}/{CONFIG.MAX_QUERY_LENGTH}
           </div>
         </div>
-
-        <button 
-          type="submit" 
-          className="send-button"
-          disabled={loading || charCount === 0 || !!validationError}
-          title={loading ? 'Processing...' : charCount === 0 ? 'Enter a message' : 'Send message'}
-        >
-          {loading ? (
-            <div className="loader">
-              <div className="spinner"></div>
-              <span>Sending...</span>
-            </div>
-          ) : (
-            <>
-              <span className="send-icon">📤</span>
-              <span>Send</span>
-            </>
-          )}
-        </button>
       </form>
 
-      {/* Helper Text */}
-      {!loading && charCount === 0 && !validationError && (
-        <div className="input-helper">
-          <div className="helper-content">
-            💡 <strong>Tips:</strong> Ask specific questions for better results. 
-            Try "What is..." or "How does..." to get started.
-          </div>
-        </div>
-      )}
 
       {/* Service Status Indicator */}
       {loading && (

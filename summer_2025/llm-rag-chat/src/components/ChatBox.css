@@ -4,5 +4,23 @@
   flex-grow: 1;
   padding: 20px;
   overflow-y: auto;
+  overflow-x: hidden;
   background-color: #1e1e2f;
+  margin-right: 400px;
+  height: 100%;
+  min-height: 0;
+}
+
+/* Ensure messages don't overflow horizontally */
+.chatbox > * {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chatbox {
+    margin-right: 0;
+  }
 }

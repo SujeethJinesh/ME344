@@ -4,18 +4,17 @@
   height: 100vh;
   background-color: #1e1e2f;
   color: #ffffff;
+  overflow: hidden;
 }
 
 .main {
   display: flex;
   flex-grow: 1;
   position: relative;
+  overflow: hidden;
+  min-height: 0;
 }
 
-.chatbox {
-  flex-grow: 1;
-  margin-right: 400px; /* Updated width to match enhanced sidebar */
-}
 
 /* Responsive adjustments for enhanced UI */
 @media (max-width: 768px) {

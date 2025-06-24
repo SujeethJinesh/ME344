@@ -549,7 +549,12 @@ start_jupyter_with_venv() {
         
         # Look for the URL with token in the log
         if [[ -f "$jupyter_log" ]]; then
-            jupyter_url=$(grep -oE "http://localhost:${port}/\?token=[a-zA-Z0-9]+" "$jupyter_log" | head -1)
+            # Try multiple patterns for Jupyter URLs (more flexible regex)
+            jupyter_url=$(grep -oE "http://localhost:${port}/[^[:space:]]*token=[a-zA-Z0-9]+" "$jupyter_log" | head -1)
+            if [[ -z "$jupyter_url" ]]; then
+                # Try simpler pattern
+                jupyter_url=$(grep -o "http://localhost:${port}/.*token=[^[:space:]]*" "$jupyter_log" | head -1)
+            fi
             if [[ -n "$jupyter_url" ]]; then
                 break
             fi
@@ -563,8 +568,15 @@ start_jupyter_with_venv() {
     log_success "Jupyter started with project venv (PID: $JUPYTER_PID)"
     log_info "Jupyter will use kernel: ME344 RAG (Python)"
     
-    # Clean up the log file after a delay (keep it for debugging if needed)
-    (sleep 10 && rm -f "$jupyter_log") &
+    # If we couldn't extract the URL, provide instructions
+    if [[ -z "$JUPYTER_URL" ]]; then
+        log_warning "Could not extract Jupyter URL with token"
+        log_info "Check the Jupyter output for the URL: grep 'token=' $jupyter_log"
+        # Keep the log file for manual inspection
+    else
+        # Clean up the log file after a delay if we successfully got the URL
+        (sleep 10 && rm -f "$jupyter_log") &
+    fi
 }
 
 # ===================================================================

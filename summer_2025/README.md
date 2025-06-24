@@ -2,6 +2,30 @@
 
 Author: [Sujeeth Jinesh](https://www.linkedin.com/in/SujeethJinesh/)
 
+## 🚀 Quick Start
+
+```bash
+# Clone the repository
+git clone <your-repo-url>
+cd summer_2025
+
+# Set up Python environment
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+
+# Install Ollama and pull models
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.1
+ollama pull nomic-embed-text
+
+# Start the RAG system (Part 1)
+./run_part1.sh
+
+# Or start the Deep Research Agent (Part 2)
+./run_part2.sh
+```
+
 ## Project Overview
 
 This project teaches you to build two complementary AI systems:
@@ -10,9 +34,69 @@ This project teaches you to build two complementary AI systems:
 
 Build a Retrieval Augmented Generation (RAG) chatbot using local data to enhance your Large Language Model responses. Perfect for querying known, static datasets.
 
+**Key Features:**
+- Local vector database (ChromaDB) with 600k+ slang definitions
+- React-based chat interface
+- Jupyter notebook for data pipeline setup
+- Real-time embedding and retrieval
+
 ### Part 2 - Deep Research Agent with MCP
 
 Build an advanced research system that can search the web, learn from new information, and provide cited answers using LangGraph workflows and the Model Context Protocol (MCP).
+
+**Key Features:**
+- Multi-step research workflow with LangGraph
+- Web search capabilities via Tavily API
+- Dynamic knowledge base updates
+- Citation tracking and source management
+
+## 📁 Project Structure
+
+```
+summer_2025/
+├── .venv/                      # Python virtual environment
+├── chroma/                     # ChromaDB data directory
+├── data/                       # Data files
+│   └── cleaned_slang_data.csv  # Urban Dictionary slang dataset
+├── deep_research_agent/        # Part 2: LangGraph research agent
+│   ├── main.py                # FastAPI server for research agent
+│   └── requirements.txt       # Agent-specific dependencies
+├── llm-rag-chat/              # React frontend application
+│   ├── src/
+│   │   ├── components/        # React components
+│   │   │   ├── Rag.js        # RAG implementation with embeddings
+│   │   │   └── ...          # Other UI components
+│   │   └── App.js           # Main application
+│   ├── package.json         # Node.js dependencies
+│   └── craco.config.js     # Webpack configuration
+├── mcp_server/               # Part 2: MCP server for web search
+│   └── main.py             # FastMCP server implementation
+├── tests/                   # Test files
+│   ├── python/             # Python test scripts
+│   └── frontend/           # Frontend test files
+├── images/                 # Documentation images
+├── rag.ipynb              # Jupyter notebook for RAG setup
+├── requirements.txt       # Python dependencies
+├── run_part1.sh          # Start script for Part 1
+├── run_part2.sh          # Start script for Part 2
+├── CLAUDE.md             # AI assistant instructions
+└── README.md             # This file
+```
+
+## 🔧 Dependencies
+
+### Python Requirements
+- **LangChain** (0.3.3): Document processing and embeddings
+- **ChromaDB** (0.4.24): Vector database for similarity search
+- **LangGraph** (0.2.45): Workflow orchestration for research agent
+- **FastAPI** (0.115.4): Web framework for API endpoints
+- **Ollama**: Local LLM inference (installed separately)
+- **Jupyter**: Interactive notebook environment
+
+### Frontend Requirements
+- **React** (18.3.1): UI framework
+- **ChromaDB JS Client** (1.7.3): Vector database client
+- **Node.js** (14+): JavaScript runtime
 
 ---
 
@@ -416,3 +500,59 @@ ssh -L 3000:localhost:3000 -L 8000:localhost:8000 -L 8001:localhost:8001 -L 8002
 Now that you're familiar with how RAG, LangGraph, and MCP work you can build your own interesting workflows for your own use cases! There are many problems in the world that could just use a bit of workflow automation and tool calling. Now you have the power to build it!
 
 We'd love to see what creative solutions you create, and what unique problems you solve!
+
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+#### ChromaDB Connection Error
+**Symptom:** "Error querying the knowledge base. Please ensure ChromaDB is running."
+
+**Solution:**
+- Ensure ChromaDB is running: `lsof -i :8000`
+- Restart ChromaDB: `./run_part1.sh`
+- Check ChromaDB logs: `tail -f chroma.log`
+
+#### Embedding Function Error
+**Symptom:** "AttributeError: module 'chromadb.utils.embedding_functions' has no attribute 'OllamaEmbeddingFunction'"
+
+**Solution:**
+- The notebook uses a custom embedding function that works across ChromaDB versions
+- Ensure Ollama is running: `ollama serve`
+- Verify nomic-embed-text model is installed: `ollama list`
+
+#### Jupyter Kernel Issues
+**Symptom:** Jupyter notebook uses wrong Python environment
+
+**Solution:**
+- Select kernel: Kernel → Change Kernel → ME344 RAG (Python)
+- Restart with: `./run_part1.sh`
+
+#### Port Already in Use
+**Symptom:** "Port 8000/3000/11434 already in use"
+
+**Solution:**
+- Kill existing processes: `lsof -ti :<port> | xargs kill -9`
+- Or use the script's interactive mode to handle conflicts
+
+### Getting Help
+
+- Check logs in the terminal where you ran the startup scripts
+- Review `CLAUDE.md` for detailed system architecture
+- Ensure all dependencies are installed: `pip list | grep -E 'langchain|chromadb|fastapi'`
+
+## 📚 Additional Resources
+
+- [LangChain Documentation](https://python.langchain.com/)
+- [ChromaDB Documentation](https://docs.trychroma.com/)
+- [Ollama Documentation](https://github.com/ollama/ollama)
+- [LangGraph Documentation](https://python.langchain.com/docs/langgraph)
+- [Model Context Protocol](https://github.com/anthropics/model-context-protocol)
+
+## 🙏 Acknowledgments
+
+- Tutorial inspired by [pixegami](https://www.youtube.com/watch?v=2TJxpyO3ei4)
+- Urban Dictionary dataset from [Kaggle](https://www.kaggle.com/datasets/therohk/urban-dictionary-words-dataset)
+- MCP standard by Anthropic
+- Built for Stanford ME344 course

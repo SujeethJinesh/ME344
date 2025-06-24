@@ -1,8 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { ChromaClient } from 'chromadb';
 
-const Rag = ({ query, onAugmentedQuery, onProcessStep }) => {
+const Rag = ({ query, queryId, onAugmentedQuery, onProcessStep }) => {
+  const processingRef = useRef(false);
+  const abortControllerRef = useRef(null);
   const fetchAugmentedQuery = async () => {
+    // Prevent duplicate executions
+    if (processingRef.current) {
+      console.log('⚠️ RAG query already in progress, skipping duplicate');
+      return;
+    }
+    processingRef.current = true;
+    
     const startTime = Date.now();
     
     try {
@@ -148,7 +157,7 @@ const Rag = ({ query, onAugmentedQuery, onProcessStep }) => {
       onProcessStep && onProcessStep("🚀 Sending augmented query to LLM...", "info");
 
       // Pass the augmented query and context back to the parent component
-      onAugmentedQuery(augmentedQuery, context);
+      onAugmentedQuery(augmentedQuery, context, queryId);
     } catch (error) {
       console.error('Error querying ChromaDB:', error);
       
@@ -173,12 +182,30 @@ const Rag = ({ query, onAugmentedQuery, onProcessStep }) => {
       }
       
       onProcessStep && onProcessStep(`❌ ${errorMessage}`, "error");
-      onAugmentedQuery(query, errorMessage); // Fallback to original query with error context
+      onAugmentedQuery(query, errorMessage, queryId); // Fallback to original query with error context
+    } finally {
+      // Reset processing flag
+      processingRef.current = false;
     }
   };
 
   useEffect(() => {
-    fetchAugmentedQuery();
+    // Create new abort controller for this effect
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    
+    if (query && query.trim() !== '') {
+      fetchAugmentedQuery();
+    }
+    
+    // Cleanup function to cancel any pending requests
+    return () => {
+      processingRef.current = false;
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
