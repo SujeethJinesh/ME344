@@ -26,6 +26,30 @@ const App = () => {
   // Derived state for backward compatibility
   const isRag = mode === 'rag';
   const isMcp = mode === 'mcp';
+  
+  // Mode change handler that clears query tracking
+  const handleModeChange = (newMode) => {
+    console.log('🔄 Changing mode from', mode, 'to', newMode);
+    
+    // Clear processed query IDs when switching modes
+    if (mode !== newMode) {
+      processedQueryIds.current.clear();
+      console.log('🧹 Cleared processed query IDs for mode change');
+    }
+    
+    // Abort any ongoing requests
+    if (abortController) {
+      abortController.abort();
+      setAbortController(null);
+    }
+    
+    // Clear mode-specific state
+    setLogMessages([]);
+    setProcessSteps([]);
+    setContext('');
+    
+    setMode(newMode);
+  };
 
   useEffect(() => {
     // Only clear when not in progress to avoid inconsistent state
@@ -164,12 +188,54 @@ const App = () => {
                   }
                   
                   setLogMessages((prevLogs) => [...prevLogs, data.content]);
+                } else if (data.type === 'partial_answer') {
+                  // Handle streaming tokens
+                  if (!window.currentStreamingMessage) {
+                    window.currentStreamingMessage = '';
+                    handleProcessStep(`🔄 Streaming answer... (${data.token_count || 0} tokens)`, "synthesis");
+                  }
+                  window.currentStreamingMessage += data.content;
+                  
+                  // Update the last message if it's a streaming message, or add a new one
+                  setMessages((prev) => {
+                    const lastMessage = prev[prev.length - 1];
+                    if (lastMessage && lastMessage.isStreaming) {
+                      return [
+                        ...prev.slice(0, -1),
+                        { text: window.currentStreamingMessage, isUser: false, isStreaming: true }
+                      ];
+                    } else {
+                      return [
+                        ...prev,
+                        { text: window.currentStreamingMessage, isUser: false, isStreaming: true }
+                      ];
+                    }
+                  });
+                  
+                  // Update token count in process steps periodically
+                  if (data.token_count && data.token_count % 10 === 0) {
+                    handleProcessStep(`🔄 Generating... (${data.token_count} tokens)`, "synthesis");
+                  }
                 } else if (data.type === 'answer') {
-                  handleProcessStep("🎯 Generating final research summary...", "info");
-                  setMessages((prev) => [
-                    ...prev,
-                    { text: data.content, isUser: false },
-                  ]);
+                  // Final complete answer - mark streaming as complete
+                  window.currentStreamingMessage = null;
+                  handleProcessStep("🎯 Final research summary complete!", "success");
+                  
+                  // Update the last streaming message to be non-streaming
+                  setMessages((prev) => {
+                    const lastMessage = prev[prev.length - 1];
+                    if (lastMessage && lastMessage.isStreaming) {
+                      return [
+                        ...prev.slice(0, -1),
+                        { text: data.content, isUser: false, isStreaming: false }
+                      ];
+                    } else {
+                      return [
+                        ...prev,
+                        { text: data.content, isUser: false }
+                      ];
+                    }
+                  });
                   handleProcessStep("🎉 Research analysis complete!", "success");
                 }
               } catch (parseError) {
@@ -248,7 +314,14 @@ const App = () => {
     }
     
     if (currentQueryId) {
+      // Add with timestamp for cleanup
       processedQueryIds.current.add(currentQueryId);
+      
+      // Clean up old query IDs after 5 minutes
+      setTimeout(() => {
+        processedQueryIds.current.delete(currentQueryId);
+        console.log('🧹 Cleaned up old query ID:', currentQueryId);
+      }, 5 * 60 * 1000); // 5 minutes
     }
     
     setContext(contextData); // Display context in the sidebar
@@ -326,10 +399,12 @@ const App = () => {
                 accumulatedResponse += data.response;
                 
                 // Update the streaming message in real-time
+                // Use the response directly to avoid closure issues
+                const currentResponse = accumulatedResponse;
                 setMessages((prev) => {
                   return prev.map((msg) => 
                     msg.id === messageId 
-                      ? { ...msg, text: accumulatedResponse }
+                      ? { ...msg, text: currentResponse }
                       : msg
                   );
                 });
@@ -444,20 +519,8 @@ const App = () => {
       <ErrorBoundary componentName="Controls">
         <Controls
           isRag={isRag}
-          setIsRag={(value) => {
-            console.log('🔧 App setIsRag called with:', value);
-            if (value) {
-              setMode('rag');
-            } else if (!isMcp) {
-              // Only allow turning off RAG if MCP is also off
-              setMode('rag'); // Keep RAG on by default
-            }
-          }}
           isMcp={isMcp}
-          setIsMcp={(value) => {
-            console.log('🔧 App setIsMcp called with:', value);
-            setMode(value ? 'mcp' : 'rag');
-          }}
+          setMode={handleModeChange}
         />
       </ErrorBoundary>
       
