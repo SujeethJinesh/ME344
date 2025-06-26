@@ -48,8 +48,6 @@ def validate_environment() -> tuple[bool, list[str]]:
     # Check for required API key
     if not os.getenv("TAVILY_API_KEY"):
         errors.append("TAVILY_API_KEY environment variable not set")
-        errors.append("  Solution: export TAVILY_API_KEY='your_api_key_here'")
-        errors.append("  Get key from: https://tavily.com/")
     
     # Check Python version
     if sys.version_info < (3, 8):
@@ -280,8 +278,8 @@ def main() -> None:
         print("🛑 Press Ctrl+C to stop the server")
         print("=" * 70)
         
-        # Use SSE transport which works with HTTP
-        mcp.run(transport="sse")
+        # Use stdio transport (default for MCP)
+        mcp.run()
         
     except KeyboardInterrupt:
         logger.info("🛑 Server shutdown requested by user")

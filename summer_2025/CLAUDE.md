@@ -170,7 +170,7 @@ The system processes Urban Dictionary slang data:
 - System prompt engineering can be modified in `Rag.js:63`
 - Deep Research Agent uses LangGraph for multi-step workflows
 - MCP protocol enables tool integration between components
-- Startup script path issue: `run_part2.sh` references `./chat-gpt-clone` but directory is `./llm-rag-chat`
+- Deep Research Agent uses separate collection name to avoid conflicts with RAG system
 
 ## Dependencies
 

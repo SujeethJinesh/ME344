@@ -98,20 +98,20 @@ check_python_environment() {
         done
         log_info ""
         log_info "To create a virtual environment:"
-        log_info "  python -m venv ./.venv"
+        log_info "  python3 -m venv ./.venv"
         log_info "  source ./.venv/bin/activate"
         log_info "  pip install -r requirements.txt"
         exit 1
     fi
     
     # Verify Python and pip are available
-    if ! command -v python &> /dev/null; then
-        log_error "Python not found in virtual environment"
-        log_info "Please ensure your virtual environment has Python installed"
+    if ! command -v python3 &> /dev/null; then
+        log_error "Python3 not found in virtual environment"
+        log_info "Please ensure your virtual environment has Python3 installed"
         exit 1
     fi
     
-    log_success "Virtual environment activated: $(which python)"
+    log_success "Virtual environment activated: $(which python3)"
 }
 
 check_python_dependencies() {
@@ -121,7 +121,7 @@ check_python_dependencies() {
     local missing_packages=()
     
     for package in "${required_packages[@]}"; do
-        if ! python -c "import ${package//-/_}" &> /dev/null; then
+        if ! python3 -c "import ${package//-/_}" &> /dev/null; then
             missing_packages+=("$package")
         fi
     done
@@ -158,7 +158,11 @@ check_environment_variables() {
     export REACT_APP_CHROMA_URL="${REACT_APP_CHROMA_URL:-http://localhost:8000}"
     export REACT_APP_OLLAMA_URL="${REACT_APP_OLLAMA_URL:-http://localhost:11434}"
     export REACT_APP_RESEARCH_URL="${REACT_APP_RESEARCH_URL:-http://localhost:8001/research}"
-    export MCP_SERVER_URL="${MCP_SERVER_URL:-http://localhost:8002/mcp}"
+    # MCP_SERVER_URL removed - Deep Research Agent now uses Tavily directly
+    export CHROMA_PERSIST_DIR="${CHROMA_PERSIST_DIR:-./deep_research_chroma}"
+    export RESEARCH_COLLECTION_NAME="${RESEARCH_COLLECTION_NAME:-deep_research_collection}"
+    export LLM_MODEL="${LLM_MODEL:-llama3.1}"
+    export EMBEDDING_MODEL="${EMBEDDING_MODEL:-nomic-embed-text}"
     
     if [[ ${#warnings[@]} -gt 0 ]]; then
         log_warning "Environment variable warnings:"
@@ -180,7 +184,7 @@ check_environment_variables() {
 check_system_requirements() {
     log_step "Checking system requirements..."
     
-    local required_commands=("node" "npm" "ollama" "chroma")
+    local required_commands=("node" "npm" "ollama")
     local missing_commands=()
     
     for cmd in "${required_commands[@]}"; do
@@ -188,6 +192,11 @@ check_system_requirements() {
             missing_commands+=("$cmd")
         fi
     done
+    
+    # Check for chroma in venv
+    if [[ ! -f "./.venv/bin/chroma" ]] && ! command -v chroma &> /dev/null; then
+        missing_commands+=("chroma")
+    fi
     
     if [[ ${#missing_commands[@]} -gt 0 ]]; then
         log_error "Missing required system commands: ${missing_commands[*]}"
@@ -229,39 +238,118 @@ check_node_dependencies() {
     log_success "Node.js dependencies verified"
 }
 
+kill_processes_on_port() {
+    local port="$1"
+    local service_name="$2"
+    
+    if command -v lsof &> /dev/null; then
+        local pids
+        pids=$(lsof -ti ":$port" 2>/dev/null)
+        if [[ -n "$pids" ]]; then
+            log_info "Killing processes on port $port ($service_name)..."
+            echo "$pids" | xargs kill -9 2>/dev/null || true
+            sleep 1
+            
+            # Verify port is free
+            if ! lsof -Pi ":$port" -sTCP:LISTEN -t >/dev/null 2>&1; then
+                log_success "Port $port freed"
+            fi
+        fi
+    elif command -v netstat &> /dev/null && command -v kill &> /dev/null; then
+        # Fallback method for systems without lsof
+        log_warning "Using fallback method to kill processes on port $port"
+        log_info "You may need to manually kill processes using: sudo lsof -ti :$port | xargs kill -9"
+    fi
+}
+
 check_port_availability() {
     log_step "Checking port availability..."
     
-    local ports=(${FRONTEND_PORT} 8000 8001 8002 11434)
+    local ports=(${FRONTEND_PORT} 8000 8001 11434)
+    local port_descriptions=("React Frontend" "ChromaDB" "Deep Research Agent" "Ollama")
     local busy_ports=()
+    local busy_descriptions=()
     
-    for port in "${ports[@]}"; do
+    for i in "${!ports[@]}"; do
+        local port="${ports[$i]}"
+        local desc="${port_descriptions[$i]}"
+        
         if command -v lsof &> /dev/null; then
             if lsof -Pi ":$port" -sTCP:LISTEN -t >/dev/null 2>&1; then
                 busy_ports+=("$port")
+                busy_descriptions+=("$desc")
             fi
         elif command -v netstat &> /dev/null; then
             if netstat -ln 2>/dev/null | grep -q ":$port "; then
                 busy_ports+=("$port")
+                busy_descriptions+=("$desc")
             fi
         fi
     done
     
     if [[ ${#busy_ports[@]} -gt 0 ]]; then
-        log_warning "Ports already in use: ${busy_ports[*]}"
-        log_info "These ports are required:"
-        log_info "  ${FRONTEND_PORT} - React Frontend"
-        log_info "  8000 - ChromaDB"
-        log_info "  8001 - Deep Research Agent"
-        log_info "  8002 - MCP Server"
-        log_info "  11434 - Ollama"
-        log_info ""
-        log_info "Continue anyway? Services may fail to start. (y/N)"
-        read -r response
-        if [[ ! "$response" =~ ^[Yy]$ ]]; then
-            log_info "Setup cancelled. Please free the required ports."
-            exit 1
+        log_warning "The following ports are already in use:"
+        for i in "${!busy_ports[@]}"; do
+            echo -e "  ${YELLOW}Port ${busy_ports[$i]}${NC} - ${busy_descriptions[$i]}"
+        done
+        echo ""
+        
+        # Special handling for known services
+        local has_chromadb=false
+        local has_ollama=false
+        for port in "${busy_ports[@]}"; do
+            [[ "$port" == "8000" ]] && has_chromadb=true
+            [[ "$port" == "11434" ]] && has_ollama=true
+        done
+        
+        if [[ "$has_chromadb" == true ]] || [[ "$has_ollama" == true ]]; then
+            log_info "Detected running services that can be reused."
         fi
+        
+        log_info "What would you like to do?"
+        log_info "  1) Kill the processes and free the ports"
+        log_info "  2) Continue anyway (some services may fail)"
+        log_info "  3) Cancel setup"
+        echo -n "Choice (1-3): "
+        read -r choice
+        
+        case "$choice" in
+            1)
+                log_info "Killing existing processes on busy ports..."
+                for i in "${!busy_ports[@]}"; do
+                    local port=${busy_ports[$i]}
+                    local desc=${busy_descriptions[$i]}
+                    kill_processes_on_port "$port" "$desc"
+                done
+                
+                # Re-check ports after killing processes
+                local still_busy=()
+                for port in "${busy_ports[@]}"; do
+                    if command -v lsof &> /dev/null; then
+                        if lsof -Pi ":$port" -sTCP:LISTEN -t >/dev/null 2>&1; then
+                            still_busy+=("$port")
+                        fi
+                    fi
+                done
+                
+                if [[ ${#still_busy[@]} -gt 0 ]]; then
+                    log_error "Failed to free ports: ${still_busy[*]}"
+                    log_info "You may need to manually kill these processes"
+                    exit 1
+                fi
+                
+                log_success "All ports freed successfully"
+                ;;
+            2)
+                log_warning "Continuing with busy ports. Some services may fail to start."
+                ;;
+            *)
+                log_info "Setup cancelled."
+                exit 0
+                ;;
+        esac
+    else
+        log_success "All required ports are available"
     fi
     
     log_success "Port availability checked"
@@ -334,15 +422,14 @@ cleanup() {
     log_info "Shutdown signal received. Stopping all services..."
     
     local services=("NPM_PID:React Frontend" "OLLAMA_PID:Ollama Server" 
-                   "CHROMA_PID:ChromaDB" "AGENT_PID:Deep Research Agent" 
-                   "MCP_PID:MCP Server")
+                   "CHROMA_PID:ChromaDB" "AGENT_PID:Deep Research Agent")
     
     for service in "${services[@]}"; do
         IFS=':' read -r pid_var service_name <<< "$service"
         local pid_value
         pid_value=$(eval echo "\$$pid_var")
         
-        if [[ -n "$pid_value" ]] && kill -0 "$pid_value" 2>/dev/null; then
+        if [[ -n "$pid_value" ]] && [[ "$pid_value" != "existing" ]] && kill -0 "$pid_value" 2>/dev/null; then
             log_info "Stopping $service_name (PID: $pid_value)..."
             kill "$pid_value" 2>/dev/null || true
             # Give process time to shutdown gracefully
@@ -351,6 +438,8 @@ cleanup() {
             if kill -0 "$pid_value" 2>/dev/null; then
                 kill -9 "$pid_value" 2>/dev/null || true
             fi
+        elif [[ "$pid_value" == "existing" ]]; then
+            log_info "Skipping $service_name (was already running)"
         fi
     done
     
@@ -387,51 +476,106 @@ main() {
     echo ""
     
     # Start all services in order
-    start_service "MCP Tool Server" \
-        "(cd ./mcp_server && python main.py)" \
-        "8002" "MCP_PID" 3
+    # MCP Server removed - Deep Research Agent now uses Tavily directly
     
     start_service "Deep Research Agent" \
         "(cd ./deep_research_agent && uvicorn main:app --reload --port 8001)" \
         "8001" "AGENT_PID" 3
     
-    start_service "ChromaDB" \
-        "(chroma run --host localhost --port 8000 --path ./chroma > /dev/null 2>&1)" \
-        "8000" "CHROMA_PID" 4
+    # Check if ChromaDB is already running
+    if curl -s "http://localhost:8000/api/v1/heartbeat" >/dev/null 2>&1; then
+        log_success "ChromaDB already running on port 8000"
+        CHROMA_PID="existing"
+    else
+        # Use chroma from venv if available
+        local chroma_cmd="chroma"
+        if [[ -f "./.venv/bin/chroma" ]]; then
+            chroma_cmd="./.venv/bin/chroma"
+        fi
+        start_service "ChromaDB" \
+            "($chroma_cmd run --host localhost --port 8000 --path ./chroma > /dev/null 2>&1)" \
+            "8000" "CHROMA_PID" 4
+    fi
     
-    start_service "Ollama Server" \
-        "(ollama serve > /dev/null 2>&1)" \
-        "11434" "OLLAMA_PID" 5
+    # Check if Ollama is already running
+    if curl -s "http://localhost:11434/api/tags" >/dev/null 2>&1; then
+        log_success "Ollama already running on port 11434"
+        OLLAMA_PID="existing"
+    else
+        start_service "Ollama Server" \
+            "(ollama serve > /dev/null 2>&1)" \
+            "11434" "OLLAMA_PID" 5
+    fi
     
-    start_service "React Frontend" \
-        "(cd ./llm-rag-chat && PORT=${FRONTEND_PORT} npm start)" \
-        "${FRONTEND_PORT}" "NPM_PID" 3
-    
+    # Display important information BEFORE starting React (which produces verbose output)
     echo ""
     print_separator
-    log_success "🎉 All services started successfully!"
+    log_success "🎉 All backend services started successfully!"
     print_separator
     echo ""
     
     # Display service information
     echo -e "${CYAN}📋 Service URLs:${NC}"
-    echo -e "  ${GREEN}React Frontend:${NC}     http://localhost:${FRONTEND_PORT}"
-    echo -e "  ${GREEN}ChromaDB:${NC}          http://localhost:8000"
-    echo -e "  ${GREEN}Research Agent:${NC}    http://localhost:8001"
-    echo -e "  ${GREEN}MCP Server:${NC}        http://localhost:8002"
-    echo -e "  ${GREEN}Ollama API:${NC}        http://localhost:11434"
+    echo -e "  ${GREEN}React Frontend:${NC}     http://localhost:${FRONTEND_PORT} (starting...)"
+    echo -e "  ${GREEN}ChromaDB:${NC}          http://localhost:8000 ✅"
+    echo -e "  ${GREEN}Research Agent:${NC}    http://localhost:8001 ✅"
+    echo -e "  ${GREEN}Ollama API:${NC}        http://localhost:11434 ✅"
     echo ""
     
     echo -e "${CYAN}🔧 Environment Variables:${NC}"
     echo -e "  ${GREEN}TAVILY_API_KEY:${NC}    ${TAVILY_API_KEY:-(not set)}"
+    echo -e "  ${GREEN}LLM_MODEL:${NC}         $LLM_MODEL"
     echo -e "  ${GREEN}CHROMA_URL:${NC}        $REACT_APP_CHROMA_URL"
     echo -e "  ${GREEN}OLLAMA_URL:${NC}        $REACT_APP_OLLAMA_URL"
+    echo -e "  ${GREEN}CHROMA_DIR:${NC}        $CHROMA_PERSIST_DIR"
     echo ""
     
     echo -e "${YELLOW}📝 Next Steps:${NC}"
     echo -e "  1. Open ${GREEN}http://localhost:${FRONTEND_PORT}${NC} in your browser"
-    echo -e "  2. If running on remote server, set up port forwarding"
+    echo -e "  2. Toggle between RAG (Slang) and MCP (Deep Research) modes"
     echo -e "  3. Press ${RED}Ctrl+C${NC} in this terminal to stop all services"
+    echo ""
+    
+    print_separator
+    log_info "Starting React Frontend (this will produce verbose output)..."
+    print_separator
+    echo ""
+    
+    # Start React Frontend with output redirected to a log file
+    local npm_log="./npm_start.log"
+    log_info "React output will be logged to: $npm_log"
+    start_service "React Frontend" \
+        "(cd ./llm-rag-chat && PORT=${FRONTEND_PORT} npm start > ../npm_start.log 2>&1)" \
+        "${FRONTEND_PORT}" "NPM_PID" 5
+    
+    # Wait a bit for React to start
+    sleep 3
+    
+    # Clear the screen to ensure our instructions are visible
+    clear
+    
+    # Display the important information again after clearing
+    print_separator
+    echo -e "${CYAN}🚀 ME344 Deep Research Agent - All Services Running${NC}"
+    print_separator
+    echo ""
+    
+    echo -e "${CYAN}📋 Service URLs:${NC}"
+    echo -e "  ${GREEN}React Frontend:${NC}     http://localhost:${FRONTEND_PORT} ✅"
+    echo -e "  ${GREEN}ChromaDB:${NC}          http://localhost:8000 ✅"
+    echo -e "  ${GREEN}Research Agent:${NC}    http://localhost:8001 ✅"
+    echo -e "  ${GREEN}Ollama API:${NC}        http://localhost:11434 ✅"
+    echo ""
+    
+    echo -e "${YELLOW}📝 Next Steps:${NC}"
+    echo -e "  1. Open ${GREEN}http://localhost:${FRONTEND_PORT}${NC} in your browser"
+    echo -e "  2. Toggle between RAG (Slang) and MCP (Deep Research) modes"
+    echo -e "  3. Press ${RED}Ctrl+C${NC} in this terminal to stop all services"
+    echo ""
+    
+    echo -e "${CYAN}📄 Logs:${NC}"
+    echo -e "  React frontend logs: ${GREEN}./npm_start.log${NC}"
+    echo -e "  Watch logs: ${GREEN}tail -f npm_start.log${NC}"
     echo ""
     
     print_separator

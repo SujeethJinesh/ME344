@@ -1,19 +1,12 @@
 import React from 'react';
 import './Controls.css';
 
-const Controls = ({ isRag, setIsRag, isMcp, setIsMcp }) => {
+const Controls = ({ isRag, isMcp, setMode }) => {
   const handleModeToggle = (e) => {
     const isChecked = e.target.checked;
-    console.log('🔄 Mode toggle clicked:', isChecked ? 'MCP' : 'RAG');
-    if (isChecked) {
-      // Switch to MCP mode
-      setIsMcp(true);
-      setIsRag(false);
-    } else {
-      // Switch to RAG mode
-      setIsRag(true);
-      setIsMcp(false);
-    }
+    const newMode = isChecked ? 'mcp' : 'rag';
+    console.log('🔄 Mode toggle clicked:', newMode.toUpperCase());
+    setMode(newMode);
   };
 
   return (
